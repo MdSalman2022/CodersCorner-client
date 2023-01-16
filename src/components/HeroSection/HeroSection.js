@@ -3,8 +3,8 @@ import styles from './HeroSection.module.css'
 
 const HeroSection = () => {
     return (
-        <div className="hero  lg:min-h-96 bg-primary lg:py-20">
-            <div className="hero-content text-center">
+        <div className="hero lg:min-h-96 bg-primary lg:py-20">
+            <div className="hero-content p-2 py-5 text-center">
                 <div className={`max-w-full ${styles.text}`}>
                     <h1 className="text-2xl lg:text-7xl font-semibold text-accent">Stay curious.</h1>
                     <p className="py-6 text-accent text-xl">Subscribe to learn about new product features, the latest in technology</p>

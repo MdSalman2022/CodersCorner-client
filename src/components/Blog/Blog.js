@@ -54,7 +54,7 @@ const Blog = () => {
                     </p>
 
                     <div className="grid md:grid-cols-4 lg:grid-cols-2 lg:gap-10">
-                        <div className="md:col-span-4 card w-full lg:h-96 my-10">
+                        <div className="md:col-span-4 lg:col-span-1 card w-full lg:h-96 my-10">
                             <LazyLoadImage className='rounded-2xl object-cover border-primary border lg:h-96' src={featured[0]?.img} alt="Shoes" />
                             <div className=" mt-5 space-y-2">
                                 <p className="font-semibold text-primary">{featured[0]?.writer} - {`${(parseInt(new Date() - new Date(featured[0]?.date)) / (1000 * 60 * 60)).toFixed(0)} hours ago`}</p>
@@ -71,9 +71,9 @@ const Blog = () => {
                             </div>
                         </div>
 
-                        <div className="flex flex-col gap-5 my-10 ">
+                        <div className="md:col-span-4 md:grid md:grid-cols-2 lg:col-span-1 lg:flex lg:flex-col gap-5 my-10 space-y-5">
                             {
-                                <div className="card   lg:card-side bg-base-100">
+                                <div className="card space-y-2 md:space-y-5 lg:card-side bg-base-100">
                                     <LazyLoadImage className='rounded-2xl  object-cover border-primary border  h-60 lg:h-full lg:w-72' src={featured[1]?.img} alt="Movie" />
                                     <div className=" px-5 space-y-3">
                                         <p className="font-semibold text-primary">{featured[1]?.writer} - {`${(parseInt(new Date() - new Date(featured[1]?.date)) / (1000 * 60 * 60)).toFixed(0)} hours ago`}</p>
@@ -91,7 +91,7 @@ const Blog = () => {
 
                             }
                             {
-                                <div className="card lg:card-side bg-base-100">
+                                <div className="card space-y-2 md:space-y-5 lg:card-side bg-base-100">
                                     <LazyLoadImage className='rounded-2xl object-cover border-primary border  h-60 lg:h-full lg:w-72' src={featured[2]?.img} alt="Movie" />
                                     <div className=" px-5 space-y-3">
                                         <p className="font-semibold text-primary">{featured[2]?.writer} - {`${(parseInt(new Date() - new Date(featured[2]?.date)) / (1000 * 60 * 60)).toFixed(0)} hours ago`}</p>
@@ -113,21 +113,21 @@ const Blog = () => {
                     <p className="text-xl font-semibold">
                         All blog posts
                     </p>
-                    <div className="grid lg:grid-cols-5 gap-5">
-                        <div className="col-span-4 grid lg:grid-cols-3 h-full lg:gap-10">
+                    <div className="grid md:grid-cols-4 lg:grid-cols-5 lg:gap-5">
+                        <div className="md:grid md:col-span-4 md:grid-cols-2 md:gap-3 lg:col-span-4 grid lg:grid-cols-3 h-full lg:gap-10">
                             {blogs.length > 0 &&
                                 blogs?.map((blog, index) =>
-                                    <div className="card w-96 h-full lg:w-full  my-10" key={index}>
+                                    <div className="card w-full md:w-80 h-full lg:w-full  my-10" key={index}>
                                         <LazyLoadImage className='rounded-2xl lg:h-60 object-cover border border-primary' src={blog?.img} alt="Shoes" />
-                                        <div className="mt-10 space-y-3 h-64 flex flex-col justify-start items-start">
+                                        <div className="mt-10 lg:space-y-3 lg:h-64 flex flex-col justify-start items-start">
                                             <p className="font-semibold text-primary">{blog?.writer} - {`${(parseInt(new Date() - new Date(blog?.date)) / (1000 * 60 * 60)).toFixed(0)} hours ago`}</p>
                                             <h2 className="card-title duration-200 hover:text-primary">
                                                 <Link to={`content/${blog?._id}`}>{blog?.title}</Link>
                                             </h2>
-                                            <p className='leading-7 tracking-wide...'>{`${blog?.description.length > 200 ? `${blog?.description.substring(0, 200)}...` : blog?.description}`}<Link className='text-blue-700'> Read More</Link></p>
+                                            <p className='lg:leading-7 lg:tracking-wide...'>{`${blog?.description.length > 200 ? `${blog?.description.substring(0, 200)}...` : blog?.description}`}<Link className='text-blue-700'> Read More</Link></p>
                                             <div className="card-actions justify-start">
                                                 {
-                                                    blog.Topics?.map(topic => <div className={`badge badge-outline ${topic === 'CSS' || topic === 'JavaScript' ? ' text-yellow-700 bg-yellow-50' : topic === 'React' || topic === 'Rest API' || topic === 'Programming' ? 'text-blue-700 bg-blue-50' : 'text-emerald-700 bg-green-50'}`}>{topic}</div>)
+                                                    blog.Topics?.map(topic => <div className={`badge badge-outline ${topic === 'CSS' || topic === 'JavaScript' || topic === 'Firestore' || topic === 'Firebase' ? ' text-yellow-700 bg-yellow-50' : topic === 'React' || topic === 'Rest API' || topic === 'Programming' || topic === 'CMS' ? 'text-blue-700 bg-blue-50' : topic === 'ExpressJs' ? 'text-black bg-black bg-opacity-10' : 'text-emerald-700 bg-green-50'}`}>{topic}</div>)
                                                 }
                                             </div>
                                         </div>
@@ -136,7 +136,7 @@ const Blog = () => {
                             }
 
                         </div>
-                        <div className='lg:border-l-2 pl-5 lg:col-span-1 lg:mt-10  '>
+                        <div className='md:col-span-4 lg:border-l-2 pl-5 lg:col-span-1 lg:mt-10  '>
                             <div className="flex justify-between">
                                 <p className='text-2xl lg:text-3xl font-semibold'>{blogs?.length} <br />Posts</p>
                                 <p className='text-2xl lg:text-3xl font-semibold'>{writers?.length} <br />Writers</p>
