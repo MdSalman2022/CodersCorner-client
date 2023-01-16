@@ -5,6 +5,7 @@ import { FaFacebookF, FaTwitter } from 'react-icons/fa';
 import { ImLinkedin2 } from 'react-icons/im';
 import { MdOutlineContentCopy } from 'react-icons/md';
 import { BsClipboardCheck } from 'react-icons/bs';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
 
 
 const ContentPage = () => {
@@ -55,28 +56,28 @@ const ContentPage = () => {
                 </div>
 
                 <div className='w-full flex justify-center mb-10'>
-                    <img className='w-[900px] h-[500px] object-fill' src={img} alt="" />
+                    <LazyLoadImage className='lg:w-[900px] lg:h-[500px] object-fill' src={img} alt="" />
                 </div>
 
                 <p className='text-center text-primary my-5 text-2xl'><span className='font-semibold'>{categoryName}</span></p>
-                <div className='lg:w-[900px]  mx-auto '>
-                    <p className='  text-left leading-9 text-lg tracking-wider'>{description}</p>
+                <div className='lg:w-[900px]  mx-auto px-3'>
+                    <p className='px-3 lg:px-0  text-left leading-9 text-lg tracking-wider'>{description}</p>
                     <br />
                     <hr />
-                    <div className="flex  my-10  justify-between">
-                        <div className='flex  gap-3 items-center'>
+                    <div className="flex lg:flex-row flex-col gap-3 my-10  justify-between">
+                        <div className='flex gap-3 items-center'>
                             <div className="avatar">
                                 <div className="w-14 h-14 rounded-full">
-                                    <img src={photoURL ? photoURL : "https://i.ibb.co/DM3jqw5/Profile-avatar-placeholder-large.png"} />
+                                    <LazyLoadImage src={photoURL ? photoURL : "https://i.ibb.co/DM3jqw5/Profile-avatar-placeholder-large.png"} />
                                 </div>
                             </div>
                             <div className="flex flex-col">
-                                <p className='text-left '><span className='font-semibold'>{writerInfo.writer}</span></p>
+                                <p className='text-left '><span className='font-semibold'>{writer}</span></p>
                                 <p className='text-left '><span className=''>{writerInfo.description}</span></p>
                             </div>
 
                         </div>
-                        <div className="social flex items-center gap-5">
+                        <div className="social flex  justify-center lg:items-center lg:gap-5">
                             <button className='py-2 px-5  rounded-lg items-center font-semibold border' onClick={handleClick}>
                                 {copied ? <span className='w-full flex gap-2 '><BsClipboardCheck className='text-xl' /> Copied!</span> : <span className='w-full flex gap-2 '><MdOutlineContentCopy className='text-xl' />  Copy LINK</span>}
                             </button>

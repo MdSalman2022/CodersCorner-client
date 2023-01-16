@@ -112,18 +112,6 @@ const Register = () => {
                             className="input input-bordered w-full max-w-xs" />
                         {errors.password && <p className='text-red-500'>{errors.password.message}</p>}
                     </div>
-                    <div className="space-y-1 text-sm">
-                        <label for="photoURL" className="block ">Profile image</label>
-                        <input type="text"
-                            {...register("photoURL",
-                                { required: "Photo is required", })}
-                            className="input input-bordered w-full max-w-xs" />
-                        {errors.photoURL && <p className='text-red-500'>{errors.photoURL.message}</p>}
-                    </div>
-                    <select className="select select-primary w-22 max-w-xs" {...register("role", { required: true })}>
-                        <option value="buyer">Buyer</option>
-                        <option value="seller">Seller</option>
-                    </select>
                     <input className='btn btn-accent w-full mt-4' value="Sign Up" type="submit" />
                     {signUpError && <p className='text-red-600'>{signUpError}</p>}
 

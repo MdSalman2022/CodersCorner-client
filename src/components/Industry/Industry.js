@@ -17,30 +17,30 @@ const Industry = () => {
                 <div className="container p-4 mx-auto text-center">
                     <h2 className="text-4xl font-bold">Trusted by the industry leaders</h2>
                 </div>
-                <div className="container flex flex-wrap justify-center mx-auto text-gray-400">
+                <div className="container grid grid-cols-3 lg:flex lg:flex-wrap justify-center mx-auto text-gray-400">
                     <div className="flex justify-center w-full  align-middle md:w-1/3 xl:w-1/4">
-                        <p className='text-6xl text-neutral p-20 hover:text-primary duration-300 '><FaAmazon /></p>
+                        <p className='text-6xl text-neutral p-5 lg:p-20 hover:text-primary duration-300 '><FaAmazon /></p>
                     </div>
                     <div className="flex justify-center w-full  align-middle md:w-1/3 xl:w-1/4">
-                        <p className='text-6xl text-neutral p-20 hover:text-primary duration-300 '><SiIntel /></p>
+                        <p className='text-6xl text-neutral p-5 lg:p-20 hover:text-primary duration-300 '><SiIntel /></p>
                     </div>
                     <div className="flex justify-center w-full  align-middle md:w-1/3 xl:w-1/4">
-                        <p className='text-6xl text-neutral p-20 hover:text-primary duration-300 '><FaBehanceSquare /></p>
+                        <p className='text-6xl text-neutral p-5 lg:p-20 hover:text-primary duration-300 '><FaBehanceSquare /></p>
                     </div>
                     <div className="flex justify-center w-full  align-middle md:w-1/3 xl:w-1/4">
-                        <p className='text-6xl text-neutral p-20 hover:text-primary duration-300 '><IoLogoCodepen /></p>
+                        <p className='text-6xl text-neutral p-5 lg:p-20 hover:text-primary duration-300 '><IoLogoCodepen /></p>
                     </div>
                     <div className="flex justify-center w-full  align-middle md:w-1/3 xl:w-1/4">
-                        <p className='text-6xl text-neutral p-20 hover:text-primary duration-300 '><IoLogoGithub /></p>
+                        <p className='text-6xl text-neutral p-5 lg:p-20 hover:text-primary duration-300 '><IoLogoGithub /></p>
                     </div>
                     <div className="flex justify-center w-full  align-middle md:w-1/3 xl:w-1/4">
-                        <p className='text-6xl text-neutral p-20 hover:text-primary duration-300 '><IoLogoTux /></p>
+                        <p className='text-6xl text-neutral p-5 lg:p-20 hover:text-primary duration-300 '><IoLogoTux /></p>
                     </div>
                     <div className="flex justify-center w-full  align-middle md:w-1/3 xl:w-1/4">
-                        <p className='text-6xl text-neutral p-20 hover:text-primary duration-300 '><SiFirebase /></p>
+                        <p className='text-6xl text-neutral p-5 lg:p-20 hover:text-primary duration-300 '><SiFirebase /></p>
                     </div>
                     <div className="flex justify-center w-full  align-middle md:w-1/3 xl:w-1/4">
-                        <p className='text-6xl text-neutral p-20 hover:text-primary duration-300 '><RxNotionLogo /></p>
+                        <p className='text-6xl text-neutral p-5 lg:p-20 hover:text-primary duration-300 '><RxNotionLogo /></p>
                     </div>
                 </div>
             </section>
