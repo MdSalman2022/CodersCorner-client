@@ -59,16 +59,16 @@ const Header = () => {
                 <ul className="menu menu-horizontal px-1">
                     <form onSubmit={handleSubmit} className=" w-80 lg:w-full search col-span-3 my-2 h-12">
                         <div className="input-group">
-                            <input type="text" placeholder="Search blog" className="input input-bordered border-primary  w-96 focus:outline-none focus:shadow-lg" />
+                            <input type="text" placeholder="Search blog" className="input input-bordered border-primary w-80 lg:w-96 focus:outline-none focus:shadow-lg" />
                             <button type="submit" className='bg-primary text-base-100 font-bold px-3 text-2xl'><AiOutlineSearch /></button>
                         </div>
                     </form>
                 </ul>
             </div>
             <div className="navbar-end hidden md:flex lg:flex">
-                <Link to={user ? "/new-blog" : "/login"} className="bg-transparent border-none text-primary mr-5 w-20 font-normal"><p className='flex items-center gap-3'><IoCreateOutline className='text-xl ' /> Write</p></Link>
-                <div className="dropdown dropdown-bottom dropdown-end  px-5">
-                    <label tabIndex={0} className="m-1"><Link className="bg-transparent border-none text-primary mr-5 w-5 font-normal md:hidden"><p><IoNotificationsOutline className='text-xl ' /></p></Link></label>
+                <Link to={user ? "/new-blog" : "/login"} className="bg-transparent border-none text-primary lg:mr-5 w-20 font-normal"><p className='flex items-center gap-3'><IoCreateOutline className='text-xl ' /> Write</p></Link>
+                <div className="dropdown dropdown-bottom dropdown-end  px-2 lg:px-5">
+                    <label tabIndex={0} className="m-1"><Link className="bg-transparent border-none text-primary lg:mr-5 w-5 font-normal md:flex lg:flex"><p><IoNotificationsOutline className='text-xl ' /></p></Link></label>
                     <ul tabIndex={0} className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52 border-2">
                         <li><a>No new Notification</a></li>
                     </ul>
@@ -86,7 +86,7 @@ const Header = () => {
                         :
                         <div className='md:flex'>
                             <Link to="/login" className="btn btn-primary btn-outline border  text-primary mr-5 w-20 font-normal">Login</Link>
-                            <Link to="/register" className="btn btn-primary text-white w-32 font-normal shadow-sm md:hidden">Get Started</Link>
+                            <Link to="/register" className="btn btn-primary text-white w-32 font-normal shadow-sm md:hidden lg:flex">Get Started</Link>
                         </div>
                 }
             </div>

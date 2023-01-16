@@ -15,6 +15,8 @@ const Login = () => {
 
     const { createUser, updateUser, providerLogin } = useContext(AuthContext)
 
+    const [createdUserEmail, setCreatedUserEmail] = useState('')
+
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -27,7 +29,6 @@ const Login = () => {
         setLoginError('')
         signIn(data.email, data.password)
             .then(result => {
-
                 navigate('/')
                 const user = result.user
                 console.log(user)
@@ -38,7 +39,21 @@ const Login = () => {
                 setLoginError(error.message)
             })
     }
-
+    const saveUser = (name, email, role) => {
+        const user = { name, email, role }
+        fetch('https://buyandsell24-server.vercel.app/users', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(user)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log('save user', data)
+                setCreatedUserEmail(email)
+            })
+    }
 
     const googleSignIn = event => {
         event.preventDefault();
@@ -46,6 +61,8 @@ const Login = () => {
         providerLogin(Provider)
             .then(result => {
                 const user = result.user;
+                saveUser(user.displayName, user.email, user.role = "buyer")
+                navigate('/')
             })
             .catch(error => console.error(error))
     }

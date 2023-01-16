@@ -72,6 +72,7 @@ const Register = () => {
             .then(result => {
                 const user = result.user;
                 saveUser(user.displayName, user.email, user.role = "buyer")
+                navigate('/')
             })
             .catch(error => console.error(error))
     }
