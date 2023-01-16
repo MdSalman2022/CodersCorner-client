@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { IoCreateOutline, IoNotificationsOutline } from 'react-icons/io5';
 import { AiOutlineSearch } from 'react-icons/ai';
+import { AuthContext } from '../../contexts/AuthProvider/AuthProvider';
 
 
 const Header = () => {
 
+
+    const { user } = useContext(AuthContext)
 
     const handleSubmit = data => {
         console.log(data)
@@ -29,9 +32,9 @@ const Header = () => {
                         <li><a className="btn btn-primary text-white w-full font-normal shadow-sm">Sign up</a></li>
                     </ul>
                 </div>
-                <a className="font-semibold normal-case text-4xl text-primary ">
+                <Link to="/" className="font-semibold normal-case text-4xl text-primary ">
                     Coders<span className='text-neutral'>Corner</span>
-                </a>
+                </Link>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
@@ -44,10 +47,23 @@ const Header = () => {
                 </ul>
             </div>
             <div className="navbar-end hidden lg:flex">
-                <Link className="bg-transparent border-none text-primary mr-5 w-20 font-normal"><p className='flex items-center gap-3'><IoCreateOutline className='text-xl ' /> Write</p></Link>
+                <Link to="/new-blog" className="bg-transparent border-none text-primary mr-5 w-20 font-normal"><p className='flex items-center gap-3'><IoCreateOutline className='text-xl ' /> Write</p></Link>
                 <Link className="bg-transparent border-none text-primary mr-5 w-5 font-normal"><p><IoNotificationsOutline className='text-xl ' /></p></Link>
-                <Link className="btn btn-primary btn-outline border  text-primary mr-5 w-20 font-normal">Login</Link>
-                <Link className="btn btn-primary text-white w-32 font-normal shadow-sm">Get Started</Link>
+                {
+                    user ?
+                        <div>
+                            <div className="avatar">
+                                <div className="w-10 rounded-full">
+                                    <img src={user?.photoURL ? user?.photoURL : "https://i.ibb.co/DM3jqw5/Profile-avatar-placeholder-large.png"} />
+                                </div>
+                            </div>
+                        </div>
+                        :
+                        <div>
+                            <Link to="/login" className="btn btn-primary btn-outline border  text-primary mr-5 w-20 font-normal">Login</Link>
+                            <Link to="/register" className="btn btn-primary text-white w-32 font-normal shadow-sm">Get Started</Link>
+                        </div>
+                }
             </div>
         </div>
     );

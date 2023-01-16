@@ -1,0 +1,291 @@
+[
+
+{
+    "title": "Top No-Code Development Tools In 2023",
+    "description": "No-code development tools have become increasingly popular in recent years, allowing businesses and individuals to create software without the need for coding knowledge. These tools allow users to create web applications, mobile apps, and even automation tools using drag-and-drop interfaces and pre-built templates. In 2023, the no-code development market is expected to continue its growth, with more businesses turning to these tools to streamline their software development process.Here are some of the top no-code development tools that are expected to be in high demand in 2023:Bubble.is: bubble.is is a visual programming platform that allows users to create web applications without writing any code. It offers a wide range of features, including a drag-and-drop interface, pre-built templates, and a database management system. Bubble.is is perfect for businesses of all sizes, and can be used to create anything from simple landing pages to complex web applications.Appgyver: Appgyver is a visual development platform that allows users to create mobile apps for iOS and Android without any coding knowledge. It offers a wide range of features, including a drag-and-drop interface, pre-built templates, and a database management system. Appgyver is perfect for businesses of all sizes, and can be used to create anything from simple mobile apps to complex enterprise solutions.Zapier: Zapier is a powerful automation tool that allows users to connect different web applications and automate tasks without writing any code. It offers a wide range of pre-built templates and a drag-and-drop interface, making it easy for users to create custom workflows. Zapier is perfect for businesses of all sizes, and can be used to automate everything from simple tasks to complex business processes.Airtable: Airtable is a no-code development tool that allows users to create custom databases and manage data without any coding knowledge. It offers a wide range of features, including a drag-and-drop interface, pre-built templates, and a database management system. Airtable is perfect for businesses of all sizes, and can be used to create anything from simple databases to complex data management systems.Webflow: Webflow is a no-code development tool that allows users to create beautiful websites without writing any code. It offers a wide range of features, including a drag-and-drop interface, pre-built templates, and a database management system. Webflow is perfect for businesses of all sizes, and can be used to create anything from simple landing pages to complex web applications.These are just a few of the many no-code development tools that are expected to be in high demand in 2023. No-code development tools are becoming increasingly popular as they allow businesses of all sizes to create software without the need for coding knowledge, streamlining the software development process and saving time and money. As the no-code development market continues to grow, more businesses are expected to turn to these tools to create custom software solutions that meet their specific needs.",
+    "Topics": ["No Code Development", "No Code App Builder","Programming", "Code Newbie"],
+    "date": "2023-01-013T07:33:38.530Z",
+    "img": "https://i.ibb.co/yPp3WLj/0-M-F3y-UVh-Vm-MAhm-K.webp",
+    "writer": "Craig S. Smith",
+    "writerId": "1",
+    "categoryName": "No-Code",
+    "categoryId": "9",
+    "featured": false
+},
+
+
+
+{
+    "title": "Picking a CMS in 2023",
+    "description": "If you are working on any kind of public-facing digital project — no matter if it’s a website, a web app, a mobile app or desktop app — you will likely need a Content Management System. There are a lot of options to chose from, and different solutions are better suited for some needs than others. We can distinguish some categories straight away: General purpose or web oriented Headless or traditional. By access to data APIs (GraphQL, REST, SDKs) Cloud based or self-hosted General purpose or web oriented The first thing to consider is whether you need a general purpose CMS or a web-oriented one. A general purpose CMS is a tool that can be used to manage content for any kind of project (apps, desktop, web), while a web-oriented CMS is a tool that is designed to manage content for websites. Web oriented CMSs are built with the assumption that the content will be displayed on a website, and they usually provide a web editor to edit the content. This is not the case for general purpose CMSs, which can be used to manage content for any kind of project, including mobile apps, desktop apps, etc. Web oriented CMSs are usually simpler to use, but they are also more limited in terms of features and integrations. They provide built-in support for pages, headers, footers, navigation menus, and other common website features, but they are not as flexible as general purpose CMSs. Also, they will typically have a `published` flag (or equivalent) for each entity. Of course, nothing stops you from using a general purpose CMS to manage content for a website, and replicate the published system. Do you need a blog? A web-oriented CMS will likely have a built-in blog solution, while a general purpose CMS will not. Examples of web-oriented CMSs are Wordpress, Drupal, Prismic or Storyblok.Those are the way to go if your main goal is to build a website and will usually provide templates to get started. They might not be the best option if you are planning to build apps or multiple websites with the same content. Headless or traditional. Traditional CMSs are the ones that provide a web editor to edit the content, and they will be responsible for rendering it on the website. So the admin interface and the website are tightly coupled. Headless CMSs are the opposite: they are not coupled to the rendering of the website and are in charge of managing the content exclusively. CMS and website are different software components in this case. They provide an API to access the content. The website is responsible for rendering the content, and it can be built with any technology. Conclusion, Picking a CMS is a very personal decision, and there is no one-size-fits-all solution. You should consider your team’s experience, the project’s requirements and your budget! At FireCMS we are happy to help if you need a CMS that is flexible and can be customised to your needs. Feel free to reach out!",
+    "Topics": ["CMS", "Content Marketing", "Firebase", "React", "Firestore"],
+    "date": "2023-01-013T07:33:38.530Z",
+    "img": "https://i.ibb.co/sCQ789h/1-YQD2p-a2-Lws7-Eeyb-V8-O6x-Q.webp",
+    "writer": "Francesco Gatti",
+    "writerId": "2",
+    "categoryName": "CMS",
+    "categoryId": "8",
+    "featured": false
+},
+
+
+{
+    "title": "10 Useful CSS Generator Tools That You Should Use in 2023",
+    "description": "When it comes to CSS, you always have to write many code lines to make your project look beautiful and presentable in terms of styling. Of course, it’s important to focus on writing good CSS for your front end, but that process might take a lot of time. As web developers, CSS is one of the essential languages when we’re working on projects. I know there are a lot of frameworks nowadays that make writing CSS code a lot easier than ever. However, we always need some shortcuts or tools that can make our life easier when it comes to coding. Fortunately, there are a lot of free open-source CSS tools and generators that can help us boost our productivity as developers.Because sometimes we don’t have time, or maybe we have to deliver projects on time. That’s why it’s better to use some CSS generators that can help us generate CSS code for our projects. In this article, I will share with you a list of useful CSS generators that you can use in 2023. So let’s get right into it.1. CSS Gradient CSS Gradient is an awesome tool that helps you create gradient for the project that you’re working on. You can choose and edit the colors you want. The tool gives you a lot of options to get the gradient background that you want and generate the code for your CSS. 2. Animista When it comes to CSS web animations and transitions, Animista is a very useful tool that gives you a full library of CSS animations that you can use on your project. The tool gives you a pre-made collection of CSS animations that you can use. You can replay each type of animation and edit it as you want. You will have a lot of options that you can customize to get a perfect animation that you need. In addition to that, the tool allows you to generate the CSS code for the animation. Of course, so that you can use it on your project. 3. Neumorphism With the popularity of Neumorphism design nowadays, a lot of designers and web developers use this type of design on web projects.Neumorphism is a useful tool for generating soft UI CSS code for your design. It’s also a very amazing tool that can help you when creating a Neumorphism design. The tool gives you a lot of options. You can pick and edit the colors, size, radius, UI distance, and more. Just give it a shot and you’ll love it. 4. Get Waves If you want to generate beautiful SVG waving shapes for your website design, Get Waves will help you out with that. The tool helps you generate eye-catching SVG shapes and waves for your project.It allows you to edit the shapes and customize them as you want. Then you can copy the SVG code for that shape or download that as an SVG if you want. 5. Shadow Brumm Shadow Brum is another awesome CSS generator tool that allows you to generate smooth CSS-based shadows. The tool makes it easier for you to create beautiful and cool shadows without having to write that in CSS. You get a few design options that you just customize such as layers and transparency, then the tool generates all the CSS code for you.",
+    "Topics": ["CSS" , "Programming", "Front End Development"],
+    "date": "2023-01-013T07:33:38.530Z",
+    "img": "https://i.ibb.co/Hp49WBt/0-hrt0l0-UATh-WKn0-D.jpg",
+    "writer": "Mehdi Aoussiad",
+    "writerId": "3",
+    "categoryName": "CSS",
+    "categoryId": "7",
+    "featured": true
+},
+
+
+
+
+
+
+
+{
+    "title": "12 React Hooks Every React Developer Should Know",
+    "description": "What is Socket.IO ?? Intraditional HTTP servers, when client requests for the resource then and then only the server responds. Server can not respond to user if new data is available. Disadvantage of these servers is user have to request again and again continuously in order to get new data. This increases load on server as well as user is also frustrated. Web Socket is a communication protocol which provides a full-duplex and low-latency channel between the server and the browser. It is used to implement connection between server and client such that server can also respond to client if new data is available or the old data is updated. Socket.IO is a library that enables real-time, bidirectional and event-based communication between the browser and the server. We can connect client and server responding to each other using socket.io. BUT Socket.IO is NOT a WebSocket implementation. Socket.IO uses WebSocket as a transport when possible, but it adds additional metadata to each packet. Due to this WebSocket client will not be able to successfully connect to a Socket.IO server, and a Socket.IO client will not be able to connect to a plain WebSocket server either. Features that socket.io provides over traditional WebSockets Reliability. Automatic Reconnection. Acknowledgments.Broadcasting to all clients or to a subset of clients (similar to Group chats).npm initSpecify some application specifications there or you can press `Enter` key and keep skipping them and keeping them as default value. Also install express and socket.io using following commands: npm install express npm install socket.io Initializing Server in Index.js Create a new file namely index.js and import some requirements. const express = require(‘express’) // Importing Express const app = express() // Creating Express Server const host = ‘localhost’ // Specifying Host const port = 8000 // Specifying Port number// Creating Http Server from Express App to work with .io const http = require(‘http’).Server(app);// Initializing socket.io object const io = require(‘socket.io’)(http,{ // Specifying CORS  cors: { origin: `*`, } }) Here in the first line we are importing express library in order to create an express server in Node JS. In second line we are creating an express app using express(). Then we are specifying our host and port number. In normal express apps you usually wont create http server object. But inorder to work with socket.io we need to create instance of http server from express app. You can  express app’s methods like .get() and .post() to listen to different endpoints.",
+    "Topics": ["NodeJs", "Socket.Io", "ExpressJs"],
+    "date": "2023-01-013T07:33:38.530Z",
+    "img": "https://miro.medium.com/max/720/1*PmrNrm9OCIHzONht9eqOuw.webp",
+    "writer": "Ayush Solanki",
+    "writerId": "4",
+    "categoryName": "NodeJs",
+    "categoryId": "6",
+    "featured": false
+},
+
+
+
+{
+    "title": "Top 10 Free Courses to learn React.js",
+    "description": "As we already know, React is one of the most well-known Javascript libraries in the programming industry. It is an open-source front-end library  lets you create fast and interactive UIs for web and mobile applications. The ultimately optimized design interfaces and code languages in React are one of the main reasons web developers use React.js for web development. It is easy to pick up, implement, create, and maintain professional-looking web (and mobile) applications because it is a component-based approach, has a clearly defined lifecycle, and uses only plain JavaScript. In comparison to Angular.js, React provides several advantages. As a result, I have compiled a list of some free React.js courses that beginners can use to learn about this incredible Javascript library. Alternatively, if you want to invest in paid courses, I have also compiled a list of the best React.js tutorials for beginners. Therefore, React newbies and those wishing to learn more about React’s fundamentals will find this article informative. So, without further ado, let us get started. 1. React JS Frontend Web Development for Beginners — [Udemy] 2. Front-End Web Development with React — [Coursera] 3. Developing Cloud Applications with Node.js and React — [edX] 4. React For Beginners — [Udemy] 5. Building User Interfaces Using Functional React Components — [Coursera] 6. Learn React — [Codecademy] 7. React Redux Toolkit Complete Guide — [Udemy] 8. React 17: Getting Started — [Pluralsight] 9. Learn React Testing — [Codecademy] 10. React Course — Beginner’s Tutorial for React JavaScript Library — [freeCodeCamp — YouTube]. Thank you for reading this article about free React courses! In the comments, let me know if you found this post helpful. Also, tell me how was your experience when you started learning React?",
+    "Topics": ["React", "JavaScript", "Programming"],
+    "date": "2023-01-013T07:33:38.530Z",
+    "img": "https://miro.medium.com/max/720/1*bj2nTvwobGzCJVhScQVFog.webp",
+    "writer": "Ayush Solanki",
+    "writerId": "4",
+    "categoryName": "React",
+    "categoryId": "5",
+    "featured": false
+},
+
+
+
+
+
+
+
+
+
+
+{
+    "title": "How to upload and preview images in React.JS",
+    "description": "In this article we are going to be covering how to allow a user to upload images to your application, and then how we can preview those images on your application. This foundation will also allow you to do more complicated tasks, as you will have access to the images and can send them to your services on the backend, or manipulate them on the front-end.A breakdown of the snippet aboveSo the code above should look mostly familiar, but let’s walk through it before we move to the next step.In our render function we need to set up an <input> tag for our user to interact with.<input type=file multiple accept=image onChange={onImageChange} />*/ We are setting an input with the type of file, and multi accept set to any image type, so a user can upload multiple images. And on upload it will run our handler function we have called onImageChange. And finally our handler function onImageChange is very simple, we are accessing the files through the object and then storing them in our state.A breakdown of the snippet above.So in the snippet above we have kept the same code from the last snippet and added onto it. You can separate this logic into its own component, the main thing is that is should utilize the useEffect hook on change of the images. So looking through this, it should again be mostly familiar with one exception. URL is a standard object in Javascript and it has an awesome method on it called createObjectURL. This method takes in an image object and then returns a string of a temporary local source for that image. Please note, on page reload or on re-render these strings will have to be re-built. Okay now that we have cleared up that awesome method, the rest of the code is pretty simple. We are using the useEffect hook to look for changes in our images array, and when it detects a change first we want to see if there are images to convert into strings. // You can have dynamic bounds, for instance if you have a cap if (images.length < 1 || images.length > yourCap) return; And then if there are images within your bounds we are going to start adding them to a temporary array to collect those URL strings. images.forEach(image => newImageURLs.push(URL.createObjectURL(image)));And then finally we just use a simple map function to render them to the user!{ imageURLs.map(imageSrc => <img src={imageSrc} />) }And thats really all there is to it! Thanks for reading and I hope this gives you a good start to working with user uploaded images in React.JS.",
+    "Topics": ["React", "JavaScript", "Programming"],
+    "date": "2023-01-013T07:33:38.530Z",
+    "img": "https://miro.medium.com/max/720/1*e-CnQ3XcOSjznpnBhMXQKg.gif",
+    "writer": "Aria Dev",
+    "writerId": "5",
+    "categoryName": "React",
+    "categoryId": "5",
+    "featured": true
+},
+
+
+
+{
+    "title": "Top 7 mistakes that React developers make",
+    "description": " At the beginning of a career, each newbie has to overcome troubles and obstacles. React developers are no exception here because their field is difficult and it seems rather hard to avoid mistakes at the very start. We have consulted our middle and senior React developers about the mistakes that juniors and trainees make. So, this time let’s turn out attention to the top mistakes that React developers make. Absence of micro-services One of the most common mistakes of newbies is putting everything in one single file. In that way, they create a monolith structure of an app that is difficult to debug and handle because everything is in one place. The best way to avoid it and reduce the pains of developers that will deal with such a code in the future is to create separate components. These components can be imported into one place later and create a necessary page for an app. Moreover, when everything is split into separate components you will be able to debug and change everything in them in the most harmless way.Direct modification of states.By design, all states in React are to be immutable. The mutation of states, objects, and arrays is a dangerous thing because it can lead to serious performance issues that will be hard to fix. React is not able to observe and commence re-rendering of the elements that have been changed but still have the same reference. The most suitable way to fix that is to apply a useState() hook or just use setState() method. That will help React to identify your changes and allow DOM to re-render them correctly. String instead of a number as the argument.To be honest, it is a trivial mistake that a lot of developers make. But it should be understood that such a tiny mistake causes a lot of trouble in the future. For example, a component or function is meant to have a number as a prop, but it receives a string. Sure thing that will lead to an error because another data type is expected. setState() is asynchronous.To be honest, sometimes even experienced developers forget about it, so no wonder a newbie does the same. What does it mean — asynchronous? That means that all the changes you provide won’t be displayed at the same time. They’d rather transfer to another render and then can be seen. Also, React will auto-batch the update calls and improve performance with it. As a result, if you forget about setState and its asynchrony, you’ll definitely receive bad results when trying to access a state value.Sure thing, you can fix that. All you need is to pass an optional second parameter to setState(). It will work as a callback and be called after each change you provide. Concluding We are all human beings and making mistakes is fine for everyone. The main thing, especially for a developer is to learn from them and tend to remove them to level up the quality of work. Look at our list, consider what mistakes you do, and try to avoid them in the ways we have represented to you.",
+    "Topics": ["React", "JavaScript", "Programming"],
+    "date": "2023-01-013T07:33:38.530Z",
+    "img": "https://miro.medium.com/max/720/1*e-CnQ3XcOSjznpnBhMXQKg.gif",
+    "writer": "Aria Dev",
+    "writerId": "5",
+    "categoryName": "React",
+    "categoryId": "5",
+    "featured": true
+},
+
+{
+    "title": "The Art of Writing Amazing REST APIs",
+    "description": "One of the key points made in the article is that REST APIs should be simple and easy to understand. The author suggests that developers should aim to create APIs that are intuitive and easy to use for their intended audience. This can be achieved by using clear and consistent naming conventions, providing clear and concise documentation, and ensuring that the API is well-structured and easy to navigate. The article also stresses the importance of security when creating REST APIs. The author explains that developers should take the necessary steps to protect their APIs against common security threats such as cross-site scripting and SQL injection attacks. Additionally, the article suggests that developers should use HTTPS to encrypt communications and use secure authentication and authorization methods. Another key point in the article is to create APIs that are scalable. The author suggests that developers should aim to create APIs that can handle a large number of requests without becoming overwhelmed. This can be achieved by using caching and other performance optimization techniques, as well as by using load-balancing and other scaling strategies. The author also mentions the importance of testing and monitoring REST APIs. The article suggests that developers should test their APIs thoroughly to ensure that they are working as expected and to identify and fix any issues that may arise. Additionally, the author suggests that developers should use monitoring tools to track the performance of their APIs and to identify and fix any issues that may arise. In conclusion, the article `The Art of Writing Amazing REST APIs` provides a comprehensive guide for developers who want to create high-quality REST APIs. The author provides valuable insights on how to design and implement REST APIs that are easy to use, understand, and maintain. The article also stresses the importance of security, scalability, testing, and monitoring when creating REST APIs. Following these tips and best practices will help developers create REST APIs that are reliable, efficient, and easy to use for their intended audience.",
+    "Topics": ["React", "Nodejs", "Rest API"],
+    "date": "2023-01-013T07:33:38.530Z",
+    "img": "https://miro.medium.com/max/720/1*e-CnQ3XcOSjznpnBhMXQKg.gif",
+    "writer": "Joy Ebertz",
+    "writerId": "6",
+    "categoryName": "Rest-API",
+    "categoryId": "4",
+    "featured": false
+}
+],
+
+[
+    {
+        "categoryName": "HTML",
+        "categoryId": "1"
+    },
+    {
+        "categoryName": "JavaScript",
+        "categoryId": "2"
+    },
+    {
+        "categoryName": "Saas",
+        "categoryId": "3"
+    },
+
+    {
+        "categoryName": "Rest-API",
+        "categoryId": "4"
+    },
+    {
+        "categoryName": "React",
+        "categoryId": "5"
+    },
+    {
+        "categoryName": "Nodejs",
+        "categoryId": "6"
+    },
+    {
+        "categoryName": "CSS",
+        "categoryId": "7"
+    },
+    {
+        "categoryName": "CMS",
+        "categoryId": "8"
+    },
+    {
+        "categoryName": "No-Code",
+        "categoryId": "9"
+    }
+]
+
+[
+    
+    {
+    "name":"No Code Development",
+    "id": "1"
+    
+    },
+    {
+    "name":"No Code App Builder",
+    "id": "2"
+    
+    },
+    {
+    "name":"Programming",
+    "id": "3"
+    
+    },
+    {
+    "name":"Code Newbie",
+    "id": "4"
+    
+    },
+    {
+    "name":"CMS",
+    "id": "5"
+    
+    },
+    {
+    "name":"Content Marketing",
+    "id": "6"
+    
+    },
+    {
+    "name":"Firebase",
+    "id": "7"
+    
+    },
+    {
+    "name":"React",
+    "id": "8"
+    
+    },
+    {
+    "name":"Firestore",
+    "id": "9"
+    
+    },
+    {
+    "name":"CSS",
+    "id": "10"
+    
+    },
+    {
+    "name":"Front End Development",
+    "id": "11"
+    
+    },
+    {
+    "name":"NodeJs",
+    "id": "12"
+    
+    },
+    {
+    "name":"Socket.Io",
+    "id": "13"
+    
+    },
+    {
+    "name":"ExpressJs",
+    "id": "14"
+    
+    },
+    {
+    "name":"JavaScript",
+    "id": "15"
+    
+    },
+    {
+    "name":"Development",
+    "id": "16"
+    
+    },
+    {
+    "name":"Rest API",
+    "id": "17"
+    
+    }
+
+]
+
+[
+    {
+        "writer": "Craig S. Smith",
+        "description": "A front-end developer working at Meta",
+        "writerId": "1"
+    },
+    {
+        "writer": "Francesco Gatti",
+        "description": "A back-end developer working at Amazon",
+        "writerId": "2"
+    },
+    {
+        "writer": "Mehdi Aoussiad",
+        "description": "A application developer working at Google",
+        "writerId": "3"
+    },
+    {
+        "writer": "Ayush Solanki",
+        "description": "A front-end developer working at Netflix",
+        "writerId": "4"
+    },
+    {
+        "writer": "Aria Dev",
+        "description": "A full-stack developer working at Amazon",
+        "writerId": "5"
+    },
+    {
+        "writer": "Joy Ebertz",
+        "description": "A back-end developer working at Microsoft",
+        "writerId": "6"
+    }
+]
