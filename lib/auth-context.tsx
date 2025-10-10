@@ -8,6 +8,8 @@ interface AuthContextType {
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (name: string, email: string, password: string) => Promise<void>;
+  signInWithGoogle: () => Promise<void>;
+  signInWithGithub: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -30,6 +32,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         name,
       });
       console.log("✅ Auth Context: Signup successful");
+      // Redirect to home page after successful signup
+      window.location.href = "http://localhost:3000/";
     } catch (error) {
       console.error("❌ Auth Context: Signup error:", error);
       throw error;
@@ -44,8 +48,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
       });
       console.log("✅ Auth Context: Login successful");
+      // Redirect to home page after successful login
+      window.location.href = "http://localhost:3000/";
     } catch (error) {
       console.error("❌ Auth Context: Login error:", error);
+      throw error;
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      console.log("🔄 Auth Context: Calling Google sign-in...");
+      await authClient.signIn.social({
+        provider: "google",
+        callbackURL: "http://localhost:3000/",
+      });
+      console.log("✅ Auth Context: Google sign-in initiated");
+    } catch (error) {
+      console.error("❌ Auth Context: Google sign-in error:", error);
+      throw error;
+    }
+  };
+
+  const signInWithGithub = async () => {
+    try {
+      console.log("🔄 Auth Context: Calling GitHub sign-in...");
+      await authClient.signIn.social({
+        provider: "github",
+        callbackURL: "http://localhost:3000/",
+      });
+      console.log("✅ Auth Context: GitHub sign-in initiated");
+    } catch (error) {
+      console.error("❌ Auth Context: GitHub sign-in error:", error);
       throw error;
     }
   };
@@ -54,10 +88,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       console.log("🔄 Auth Context: Calling signOut...");
       await authClient.signOut();
-      setUser(null);
-      console.log("✅ Auth Context: Logout successful");
+      console.log("✅ Auth Context: Sign out successful");
     } catch (error) {
-      console.error("❌ Auth Context: Logout error:", error);
+      console.error("❌ Auth Context: Sign out error:", error);
+      throw error;
     }
   };
 
@@ -68,6 +102,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         isLoading: isPending,
         signIn,
         signUp,
+        signInWithGoogle,
+        signInWithGithub,
         signOut,
       }}
     >
