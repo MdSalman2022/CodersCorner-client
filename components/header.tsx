@@ -24,9 +24,11 @@ export function Header() {
           Coders Corner
         </Link>
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm">
-            <Search className="h-4 w-4 mr-2" />
-            Search
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/search">
+              <Search className="h-4 w-4 mr-2" />
+              Search
+            </Link>
           </Button>
 
           <Button
@@ -63,7 +65,7 @@ export function Header() {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end" forceMount>
                   <DropdownMenuItem asChild>
-                    <Link href="/profile">Profile</Link>
+                    <Link href={`/profile/${user.id}`}>Profile</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={signOut}>
                     Sign out
