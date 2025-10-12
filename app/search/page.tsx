@@ -31,6 +31,7 @@ interface Post {
   tags: string[];
   likes: string[];
   comments: any[];
+  isFeatured: boolean; // Add isFeatured property
 }
 
 export default function SearchPage() {
@@ -90,7 +91,8 @@ export default function SearchPage() {
             </div>
             <h1 className="text-4xl font-bold mb-3">Discover Stories</h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Search through thousands of articles, tutorials, and insights from our developer community
+              Search through thousands of articles, tutorials, and insights from
+              our developer community
             </p>
           </div>
 
@@ -132,7 +134,9 @@ export default function SearchPage() {
               {loading ? (
                 <div className="text-center py-16">
                   <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-                  <p className="text-lg text-muted-foreground">Searching through stories...</p>
+                  <p className="text-lg text-muted-foreground">
+                    Searching through stories...
+                  </p>
                 </div>
               ) : results.length === 0 ? (
                 <div className="text-center py-16">
@@ -141,7 +145,8 @@ export default function SearchPage() {
                   </div>
                   <h3 className="text-2xl font-bold mb-3">No stories found</h3>
                   <p className="text-lg text-muted-foreground mb-6 max-w-md mx-auto">
-                    We couldn't find any posts matching "{query}". Try different keywords or browse popular topics below.
+                    We couldn't find any posts matching "{query}". Try different
+                    keywords or browse popular topics below.
                   </p>
                   <Button variant="outline" onClick={() => setSearched(false)}>
                     Browse Topics
@@ -151,8 +156,13 @@ export default function SearchPage() {
                 <>
                   <div className="text-center bg-muted/50 rounded-2xl p-6">
                     <p className="text-lg text-muted-foreground">
-                      Found <span className="font-semibold text-primary">{results.length}</span> story
-                      {results.length !== 1 ? "ies" : "y"} for <span className="font-semibold">"{query}"</span>
+                      Found{" "}
+                      <span className="font-semibold text-primary">
+                        {results.length}
+                      </span>{" "}
+                      story
+                      {results.length !== 1 ? "ies" : "y"} for{" "}
+                      <span className="font-semibold">"{query}"</span>
                     </p>
                   </div>
 
@@ -177,7 +187,11 @@ export default function SearchPage() {
                                 </Link>
                               </p>
                               <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
+                                <span>
+                                  {new Date(
+                                    post.publishedAt
+                                  ).toLocaleDateString()}
+                                </span>
                                 <span>•</span>
                                 <div className="flex items-center gap-1">
                                   <Clock className="h-3 w-3" />
@@ -187,7 +201,9 @@ export default function SearchPage() {
                             </div>
                           </div>
                           <CardTitle className="text-xl group-hover:text-primary transition-colors cursor-pointer leading-tight">
-                            <Link href={`/posts/${post._id}`}>{post.title}</Link>
+                            <Link href={`/posts/${post._id}`}>
+                              {post.title}
+                            </Link>
                           </CardTitle>
                           <CardDescription className="text-base leading-relaxed line-clamp-3">
                             {post.excerpt}
@@ -212,13 +228,25 @@ export default function SearchPage() {
                               )}
                             </div>
                             <div className="flex items-center gap-4 text-muted-foreground">
-                              <Button variant="ghost" size="sm" className="h-8 px-2 hover:text-red-500">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 px-2 hover:text-red-500"
+                              >
                                 <Heart className="h-4 w-4 mr-1" />
-                                <span className="text-sm">{post.likes.length}</span>
+                                <span className="text-sm">
+                                  {post.likes.length}
+                                </span>
                               </Button>
-                              <Button variant="ghost" size="sm" className="h-8 px-2 hover:text-blue-500">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 px-2 hover:text-blue-500"
+                              >
                                 <MessageCircle className="h-4 w-4 mr-1" />
-                                <span className="text-sm">{post.comments.length}</span>
+                                <span className="text-sm">
+                                  {post.comments.length}
+                                </span>
                               </Button>
                             </div>
                           </div>
@@ -235,29 +263,85 @@ export default function SearchPage() {
           {!searched && (
             <div className="space-y-8">
               <div className="text-center">
-                <h2 className="text-3xl font-bold mb-3">Explore Popular Topics</h2>
+                <h2 className="text-3xl font-bold mb-3">
+                  Explore Popular Topics
+                </h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  Discover trending technologies and frameworks that developers are talking about
+                  Discover trending technologies and frameworks that developers
+                  are talking about
                 </p>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 {[
-                  { name: "JavaScript", color: "bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20" },
-                  { name: "React", color: "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20" },
-                  { name: "Next.js", color: "bg-gray-500/10 text-gray-600 hover:bg-gray-500/20" },
-                  { name: "TypeScript", color: "bg-blue-600/10 text-blue-700 hover:bg-blue-600/20" },
-                  { name: "Python", color: "bg-green-500/10 text-green-600 hover:bg-green-500/20" },
-                  { name: "Node.js", color: "bg-green-600/10 text-green-700 hover:bg-green-600/20" },
-                  { name: "CSS", color: "bg-purple-500/10 text-purple-600 hover:bg-purple-500/20" },
-                  { name: "HTML", color: "bg-orange-500/10 text-orange-600 hover:bg-orange-500/20" },
-                  { name: "Git", color: "bg-red-500/10 text-red-600 hover:bg-red-500/20" },
-                  { name: "Docker", color: "bg-cyan-500/10 text-cyan-600 hover:bg-cyan-500/20" },
-                  { name: "AWS", color: "bg-orange-600/10 text-orange-700 hover:bg-orange-600/20" },
-                  { name: "MongoDB", color: "bg-green-600/10 text-green-700 hover:bg-green-600/20" },
-                  { name: "PostgreSQL", color: "bg-blue-700/10 text-blue-800 hover:bg-blue-700/20" },
-                  { name: "GraphQL", color: "bg-pink-500/10 text-pink-600 hover:bg-pink-500/20" },
-                  { name: "REST API", color: "bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20" },
+                  {
+                    name: "JavaScript",
+                    color:
+                      "bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20",
+                  },
+                  {
+                    name: "React",
+                    color: "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20",
+                  },
+                  {
+                    name: "Next.js",
+                    color: "bg-gray-500/10 text-gray-600 hover:bg-gray-500/20",
+                  },
+                  {
+                    name: "TypeScript",
+                    color: "bg-blue-600/10 text-blue-700 hover:bg-blue-600/20",
+                  },
+                  {
+                    name: "Python",
+                    color:
+                      "bg-green-500/10 text-green-600 hover:bg-green-500/20",
+                  },
+                  {
+                    name: "Node.js",
+                    color:
+                      "bg-green-600/10 text-green-700 hover:bg-green-600/20",
+                  },
+                  {
+                    name: "CSS",
+                    color:
+                      "bg-purple-500/10 text-purple-600 hover:bg-purple-500/20",
+                  },
+                  {
+                    name: "HTML",
+                    color:
+                      "bg-orange-500/10 text-orange-600 hover:bg-orange-500/20",
+                  },
+                  {
+                    name: "Git",
+                    color: "bg-red-500/10 text-red-600 hover:bg-red-500/20",
+                  },
+                  {
+                    name: "Docker",
+                    color: "bg-cyan-500/10 text-cyan-600 hover:bg-cyan-500/20",
+                  },
+                  {
+                    name: "AWS",
+                    color:
+                      "bg-orange-600/10 text-orange-700 hover:bg-orange-600/20",
+                  },
+                  {
+                    name: "MongoDB",
+                    color:
+                      "bg-green-600/10 text-green-700 hover:bg-green-600/20",
+                  },
+                  {
+                    name: "PostgreSQL",
+                    color: "bg-blue-700/10 text-blue-800 hover:bg-blue-700/20",
+                  },
+                  {
+                    name: "GraphQL",
+                    color: "bg-pink-500/10 text-pink-600 hover:bg-pink-500/20",
+                  },
+                  {
+                    name: "REST API",
+                    color:
+                      "bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20",
+                  },
                 ].map((topic) => (
                   <Button
                     key={topic.name}
@@ -277,14 +361,16 @@ export default function SearchPage() {
 
               {/* Trending Searches */}
               <div className="bg-muted/50 rounded-2xl p-8 text-center">
-                <h3 className="text-xl font-semibold mb-4">Trending This Week</h3>
+                <h3 className="text-xl font-semibold mb-4">
+                  Trending This Week
+                </h3>
                 <div className="flex flex-wrap gap-3 justify-center">
                   {[
                     "AI in Web Development",
                     "Modern React Patterns",
                     "TypeScript Best Practices",
                     "Serverless Architecture",
-                    "DevOps for Startups"
+                    "DevOps for Startups",
                   ].map((trend) => (
                     <Button
                       key={trend}

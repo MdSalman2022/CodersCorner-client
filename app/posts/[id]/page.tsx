@@ -36,6 +36,7 @@ interface Post {
   readingTime: number;
   likes: string[];
   comments: any[];
+  isFeatured: boolean; // Add isFeatured property
 }
 
 interface Comment {

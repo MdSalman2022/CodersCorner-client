@@ -30,6 +30,7 @@ interface Post {
   tags: string[];
   likes: string[];
   comments: any[];
+  isFeatured: boolean; // Add isFeatured property
 }
 
 export default function Posts() {
@@ -169,7 +170,8 @@ export default function Posts() {
             </div>
             <h2 className="text-3xl font-bold mb-3">No stories yet</h2>
             <p className="text-xl text-muted-foreground mb-8 max-w-md mx-auto">
-              Be the first to share your knowledge and insights with the developer community!
+              Be the first to share your knowledge and insights with the
+              developer community!
             </p>
             {user ? (
               <Button size="lg" className="shadow-lg">
@@ -183,7 +185,10 @@ export default function Posts() {
                 </Button>
                 <p className="text-sm text-muted-foreground">
                   Already have an account?{" "}
-                  <Link href="/auth/login" className="text-primary hover:underline">
+                  <Link
+                    href="/auth/login"
+                    className="text-primary hover:underline"
+                  >
                     Sign in
                   </Link>
                 </p>
@@ -212,7 +217,9 @@ export default function Posts() {
                         </Link>
                       </p>
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        <span>{new Date(post.publishedAt).toLocaleDateString()}</span>
+                        <span>
+                          {new Date(post.publishedAt).toLocaleDateString()}
+                        </span>
                         <span>•</span>
                         <div className="flex items-center gap-1">
                           <Clock className="h-3 w-3" />
@@ -247,11 +254,19 @@ export default function Posts() {
                       )}
                     </div>
                     <div className="flex items-center gap-4 text-muted-foreground">
-                      <Button variant="ghost" size="sm" className="h-8 px-2 hover:text-red-500">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 px-2 hover:text-red-500"
+                      >
                         <Heart className="h-4 w-4 mr-1" />
                         <span className="text-sm">{post.likes.length}</span>
                       </Button>
-                      <Button variant="ghost" size="sm" className="h-8 px-2 hover:text-blue-500">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 px-2 hover:text-blue-500"
+                      >
                         <MessageCircle className="h-4 w-4 mr-1" />
                         <span className="text-sm">{post.comments.length}</span>
                       </Button>

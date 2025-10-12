@@ -51,6 +51,7 @@ interface Post {
   readingTime: number;
   tags: string[];
   likes: string[];
+  isFeatured: boolean; // Add isFeatured property
 }
 
 export default function ProfilePage() {

@@ -16,6 +16,7 @@ import {
   Edit,
   Trash2,
   Search,
+  Star,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
@@ -60,6 +61,7 @@ interface Post {
   title: string;
   excerpt: string;
   status: string;
+  isFeatured: boolean; // Add isFeatured property
   author: {
     name: string;
     email: string;
@@ -92,7 +94,7 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch("/api/admin/stats", {
+      const response = await fetch("http://localhost:5000/api/admin/stats", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -111,7 +113,7 @@ export default function AdminDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("/api/admin/users", {
+      const response = await fetch("http://localhost:5000/api/admin/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -135,7 +137,7 @@ export default function AdminDashboard() {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("/api/admin/posts", {
+      const response = await fetch("http://localhost:5000/api/admin/posts", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -162,16 +164,19 @@ export default function AdminDashboard() {
 
   const updateUserRole = async (userId: string, newRole: string) => {
     try {
-      const response = await fetch(`/api/admin/users/${userId}/role`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user?.betterAuthId || user?.id,
-          roleName: newRole,
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/admin/users/${userId}/role`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user?.betterAuthId || user?.id,
+            roleName: newRole,
+          }),
+        }
+      );
 
       if (response.ok) {
         toast.success("User role updated successfully");
@@ -187,16 +192,19 @@ export default function AdminDashboard() {
 
   const updatePostStatus = async (postId: string, newStatus: string) => {
     try {
-      const response = await fetch(`/api/admin/posts/${postId}/status`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user?.betterAuthId || user?.id,
-          status: newStatus,
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/admin/posts/${postId}/status`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user?.betterAuthId || user?.id,
+            status: newStatus,
+          }),
+        }
+      );
 
       if (response.ok) {
         toast.success("Post status updated successfully");
@@ -214,13 +222,16 @@ export default function AdminDashboard() {
     if (!confirm("Are you sure you want to delete this post?")) return;
 
     try {
-      const response = await fetch(`/api/admin/posts/${postId}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: user?.betterAuthId || user?.id }),
-      });
+      const response = await fetch(
+        `http://localhost:5000/api/admin/posts/${postId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: user?.betterAuthId || user?.id }),
+        }
+      );
 
       if (response.ok) {
         toast.success("Post deleted successfully");
@@ -231,6 +242,36 @@ export default function AdminDashboard() {
     } catch (error) {
       console.error("Failed to delete post:", error);
       toast.error("Failed to delete post");
+    }
+  };
+
+  const toggleFeatured = async (postId: string, currentFeatured: boolean) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/admin/posts/${postId}/featured`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user?.betterAuthId || user?.id,
+            isFeatured: !currentFeatured,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        toast.success(
+          `Post ${!currentFeatured ? "marked as" : "unmarked from"} featured`
+        );
+        fetchPosts();
+      } else {
+        toast.error("Failed to update featured status");
+      }
+    } catch (error) {
+      console.error("Failed to toggle featured:", error);
+      toast.error("Failed to update featured status");
     }
   };
 
@@ -512,6 +553,21 @@ export default function AdminDashboard() {
                                 </SelectItem>
                               </SelectContent>
                             </Select>
+                            <Button
+                              variant={post.isFeatured ? "default" : "outline"}
+                              size="sm"
+                              onClick={() =>
+                                toggleFeatured(post._id, post.isFeatured)
+                              }
+                            >
+                              <Star
+                                className={`h-4 w-4 ${
+                                  post.isFeatured
+                                    ? "fill-current text-yellow-500"
+                                    : ""
+                                }`}
+                              />
+                            </Button>
                             <Button
                               variant="destructive"
                               size="sm"
