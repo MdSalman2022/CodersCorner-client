@@ -51,7 +51,9 @@ interface Post {
   readingTime: number;
   tags: string[];
   likes: string[];
-  isFeatured: boolean; // Add isFeatured property
+  isFeatured: boolean;
+  coverImage?: string;
+  updatedAt?: string;
 }
 
 export default function ProfilePage() {
@@ -198,7 +200,7 @@ export default function ProfilePage() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="max-w-7xl mx-auto px-4 py-8 max-w-4xl">
         {/* Profile Header */}
         <div className="space-y-6">
           <Card>

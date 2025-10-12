@@ -26,6 +26,7 @@ import { Header } from "@/components/header";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
+import { MediumHeader } from "@/components/medium-header";
 
 export default function Write() {
   const { user } = useAuth();
@@ -35,11 +36,48 @@ export default function Write() {
   const [tags, setTags] = useState("");
   const [category, setCategory] = useState("");
   const [coverImage, setCoverImage] = useState("");
-  const [uploadedImages, setUploadedImages] = useState<any[]>([]);
   const [isPublishing, setIsPublishing] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadingCover, setIsUploadingCover] = useState(false);
+  const coverFileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleCoverImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    if (file.size > 5 * 1024 * 1024) {
+      // 5MB limit
+      toast.error("Image size must be less than 5MB");
+      return;
+    }
+
+    setIsUploadingCover(true);
+    try {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const response = await fetch("http://localhost:5000/api/uploads/single", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setCoverImage(result.image.url);
+        toast.success("Cover image uploaded successfully!");
+      } else {
+        toast.error("Failed to upload cover image");
+      }
+    } catch (err) {
+      toast.error("Failed to upload cover image");
+    } finally {
+      setIsUploadingCover(false);
+    }
+  };
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -127,7 +165,6 @@ export default function Write() {
           status: "published",
           userId: user.id,
           coverImage: coverImage.trim(),
-          images: uploadedImages,
         }),
       });
 
@@ -171,7 +208,6 @@ export default function Write() {
           status: "draft",
           userId: user.id,
           coverImage: coverImage.trim(),
-          images: uploadedImages,
         }),
       });
 
@@ -199,10 +235,10 @@ export default function Write() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <MediumHeader />
 
       {/* Header Actions */}
-      <div className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-16 z-40 shadow-sm">
+      <div className="max-w-7xl mx-auto border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-16 z-40 shadow-sm">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Link href="/">
@@ -275,190 +311,167 @@ export default function Write() {
       </div>
 
       {/* Editor */}
-      <main className="container mx-auto px-4 py-8 max-w-5xl">
-        <div className="space-y-6">
-          {/* Title Input */}
-          <div className="space-y-2">
-            <Input
-              placeholder="Enter your post title..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="text-4xl font-bold border-none shadow-none px-0 focus-visible:ring-0 placeholder:text-muted-foreground/50 bg-transparent"
-            />
-            {title.length > 0 && (
-              <p className="text-xs text-muted-foreground">
-                {title.length} characters
-              </p>
-            )}
-          </div>
-
-          {/* Rich Text Editor */}
-          <div className="relative">
-            <TiptapEditor content={content} onChange={setContent} />
-            {content.length > 0 && (
-              <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
-                <span>{content.split(/\s+/).filter(Boolean).length} words</span>
-                <span>
-                  {Math.ceil(content.split(/\s+/).filter(Boolean).length / 200)}{" "}
-                  min read
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Publishing Details */}
-          <Card className="shadow-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Send className="h-5 w-5 text-primary" />
-                Publishing Details
-              </CardTitle>
-              <p className="text-sm text-muted-foreground">
-                Add details to help readers find your post
-              </p>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Cover Image */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium flex items-center gap-2">
-                  <ImageIcon className="h-4 w-4" />
-                  Cover Image
-                </label>
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-12 gap-8">
+          {/* Main Content - Content Editor */}
+          <div className="col-span-9 space-y-8">
+            {/* Title Section */}
+            <div className="space-y-3">
+              <div className="border-b border-muted pb-2">
                 <Input
-                  placeholder="https://example.com/cover.jpg"
-                  value={coverImage}
-                  onChange={(e) => setCoverImage(e.target.value)}
-                  className="font-mono text-sm"
+                  placeholder="Post title..."
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="text-4xl font-bold border-none shadow-none px-0 focus-visible:ring-0 placeholder:text-muted-foreground/60 bg-transparent h-auto py-2"
                 />
-                {coverImage && (
-                  <div className="relative rounded-lg overflow-hidden border">
+              </div>
+              {title.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  {title.length} characters
+                </p>
+              )}
+            </div>
+
+            {/* Content Editor - Full Width */}
+            <div className="space-y-4">
+              <div className="min-h-[600px] border border-muted/50 rounded-lg overflow-hidden focus-within:border-primary/50 transition-colors">
+                <TiptapEditor content={content} onChange={setContent} />
+              </div>
+              {content.length > 0 && (
+                <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <span>
+                    {content.split(/\s+/).filter(Boolean).length} words
+                  </span>
+                  <span>
+                    {Math.ceil(
+                      content.split(/\s+/).filter(Boolean).length / 200
+                    )}{" "}
+                    min read
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Sidebar - Cover Image & Metadata */}
+          <aside className="col-span-3 space-y-8">
+            {/* Cover Image Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
+                  Cover Image
+                </h2>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => coverFileInputRef.current?.click()}
+                  disabled={isUploadingCover}
+                  className="text-sm gap-2 hover:bg-muted"
+                >
+                  {isUploadingCover ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4" />
+                      Change
+                    </>
+                  )}
+                </Button>
+                <input
+                  ref={coverFileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCoverImageUpload}
+                  className="hidden"
+                />
+              </div>
+
+              {coverImage ? (
+                <div className="relative group">
+                  <div className="aspect-video w-full overflow-hidden rounded-lg border-2 border-transparent group-hover:border-primary/20 transition-colors">
                     <img
                       src={coverImage}
                       alt="Cover preview"
-                      className="w-full h-48 object-cover"
+                      className="w-full h-full object-cover"
                       onError={(e) => {
                         (e.target as HTMLImageElement).style.display = "none";
                       }}
                     />
                   </div>
-                )}
-                <p className="text-xs text-muted-foreground">
-                  Add a cover image URL or upload one below
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Tags */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Tags</label>
-                  <Input
-                    placeholder="react, javascript, tutorial"
-                    value={tags}
-                    onChange={(e) => setTags(e.target.value)}
-                  />
-                  {tags && (
-                    <div className="flex flex-wrap gap-2">
-                      {tags.split(",").map((tag, index) => (
-                        <span
-                          key={index}
-                          className="bg-primary/10 text-primary px-2 py-1 rounded-md text-xs font-medium"
-                        >
-                          #{tag.trim()}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                  <p className="text-xs text-muted-foreground">
-                    Separate tags with commas
-                  </p>
-                </div>
-
-                {/* Category */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium">Category</label>
-                  <Input
-                    placeholder="Frontend, Backend, DevOps..."
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Choose a category for your post
-                  </p>
-                </div>
-              </div>
-
-              {/* Image Upload Section */}
-              <div className="border-t pt-4">
-                <div className="flex items-center justify-between mb-4">
-                  <label className="text-sm font-medium">
-                    Images ({uploadedImages.length})
-                  </label>
                   <Button
-                    type="button"
-                    variant="outline"
+                    variant="secondary"
                     size="sm"
-                    onClick={() => fileInputRef.current?.click()}
+                    className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
+                    onClick={() => setCoverImage("")}
                   >
-                    <Upload className="h-4 w-4 mr-2" />
-                    Upload Image
+                    <X className="h-4 w-4" />
                   </Button>
-                  <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
                 </div>
+              ) : (
+                <div
+                  className="aspect-video w-full border-2 border-dashed border-muted-foreground/30 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-muted/20 transition-colors"
+                  onClick={() => coverFileInputRef.current?.click()}
+                >
+                  <ImageIcon className="h-8 w-8 text-muted-foreground mb-3" />
+                  <p className="text-sm text-muted-foreground font-medium mb-1">
+                    Add a cover image
+                  </p>
+                  <p className="text-xs text-muted-foreground text-center">
+                    Recommended: 1200×600px, max 5MB
+                  </p>
+                </div>
+              )}
+            </div>
 
-                {uploadedImages.length > 0 && (
-                  <div className="space-y-3">
-                    {uploadedImages.map((image, index) => (
-                      <div
+            {/* Tags and Category */}
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <label className="text-sm font-medium text-muted-foreground">
+                  Tags
+                </label>
+                <Input
+                  placeholder="javascript, react, tutorial"
+                  value={tags}
+                  onChange={(e) => setTags(e.target.value)}
+                  className="border-muted focus:border-primary"
+                />
+                {tags && (
+                  <div className="flex flex-wrap gap-2">
+                    {tags.split(",").map((tag, index) => (
+                      <span
                         key={index}
-                        className="flex items-start gap-3 p-3 border rounded-lg"
+                        className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium"
                       >
-                        <img
-                          src={image.url}
-                          alt={image.alt || `Image ${index + 1}`}
-                          className="w-16 h-16 object-cover rounded"
-                        />
-                        <div className="flex-1 space-y-2">
-                          <Input
-                            placeholder="Alt text (optional)"
-                            value={image.alt || ""}
-                            onChange={(e) =>
-                              updateImageAlt(index, e.target.value)
-                            }
-                            className="text-sm"
-                          />
-                          <Input
-                            placeholder="Caption (optional)"
-                            value={image.caption || ""}
-                            onChange={(e) =>
-                              updateImageCaption(index, e.target.value)
-                            }
-                            className="text-sm"
-                          />
-                        </div>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => removeImage(index)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </div>
+                        #{tag.trim()}
+                      </span>
                     ))}
                   </div>
                 )}
-
-                <p className="text-xs text-muted-foreground mt-2">
-                  Upload images to include in your post. Max 5MB per image.
+                <p className="text-xs text-muted-foreground">
+                  Separate tags with commas
                 </p>
               </div>
-            </CardContent>
-          </Card>
+
+              <div className="space-y-4">
+                <label className="text-sm font-medium text-muted-foreground">
+                  Category
+                </label>
+                <Input
+                  placeholder="Frontend, Backend, DevOps..."
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="border-muted focus:border-primary"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Optional category for your post
+                </p>
+              </div>
+            </div>
+          </aside>
         </div>
       </main>
 
@@ -477,6 +490,25 @@ export default function Write() {
                   alt="Cover"
                   className="w-full h-64 object-cover"
                 />
+              </div>
+            )}
+
+            {/* Tags and Category */}
+            {(tags || category) && (
+              <div className="flex flex-wrap gap-2">
+                {tags.split(",").map((tag, index) => (
+                  <span
+                    key={index}
+                    className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium"
+                  >
+                    #{tag.trim()}
+                  </span>
+                ))}
+                {category && (
+                  <span className="bg-muted text-muted-foreground px-3 py-1 rounded-full text-sm font-medium">
+                    {category}
+                  </span>
+                )}
               </div>
             )}
 
@@ -515,20 +547,6 @@ export default function Write() {
                   min read
                 </span>
               </div>
-
-              {/* Tags */}
-              {tags && (
-                <div className="flex flex-wrap gap-2">
-                  {tags.split(",").map((tag, index) => (
-                    <span
-                      key={index}
-                      className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium"
-                    >
-                      #{tag.trim()}
-                    </span>
-                  ))}
-                </div>
-              )}
             </div>
 
             {/* Article Content */}
@@ -543,29 +561,6 @@ export default function Write() {
                 prose-pre:bg-muted prose-pre:border"
               dangerouslySetInnerHTML={{ __html: content }}
             />
-
-            {/* Uploaded Images Preview */}
-            {uploadedImages.length > 0 && (
-              <div className="border-t pt-6 space-y-4">
-                <h3 className="font-semibold text-lg">Attached Images</h3>
-                <div className="grid grid-cols-2 gap-4">
-                  {uploadedImages.map((image, index) => (
-                    <div key={index} className="space-y-2">
-                      <img
-                        src={image.url}
-                        alt={image.alt || `Image ${index + 1}`}
-                        className="w-full rounded-lg shadow-sm border"
-                      />
-                      {image.caption && (
-                        <p className="text-sm text-muted-foreground italic text-center">
-                          {image.caption}
-                        </p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
         </DialogContent>
       </Dialog>

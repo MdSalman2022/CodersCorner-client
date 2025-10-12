@@ -12,7 +12,14 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Clock, Heart, MessageCircle, Bookmark, Plus } from "lucide-react";
+import {
+  Clock,
+  Heart,
+  MessageCircle,
+  Bookmark,
+  Plus,
+  BookOpen,
+} from "lucide-react";
 import { Header } from "@/components/header";
 import { useAuth } from "@/lib/auth-context";
 
@@ -30,7 +37,9 @@ interface Post {
   tags: string[];
   likes: string[];
   comments: any[];
-  isFeatured: boolean; // Add isFeatured property
+  isFeatured: boolean;
+  coverImage?: string;
+  updatedAt?: string;
 }
 
 export default function Posts() {
@@ -124,7 +133,7 @@ export default function Posts() {
 
       {/* Header with Write Button */}
       <div className="border-b bg-gradient-to-r from-background via-muted/20 to-background">
-        <div className="container mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-4xl font-bold mb-2">Latest Stories</h1>
@@ -162,7 +171,7 @@ export default function Posts() {
       </div>
 
       {/* Posts Feed */}
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="max-w-7xl mx-auto px-4 py-8 max-w-4xl">
         {posts.length === 0 ? (
           <div className="text-center py-16">
             <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">

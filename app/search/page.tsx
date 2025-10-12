@@ -31,7 +31,9 @@ interface Post {
   tags: string[];
   likes: string[];
   comments: any[];
-  isFeatured: boolean; // Add isFeatured property
+  isFeatured: boolean;
+  coverImage?: string;
+  updatedAt?: string;
 }
 
 export default function SearchPage() {
@@ -82,7 +84,7 @@ export default function SearchPage() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="container mx-auto px-4 py-8 max-w-4xl">
+      <main className="max-w-7xl mx-auto px-4 py-8 max-w-4xl">
         {/* Search Header */}
         <div className="space-y-8">
           <div className="text-center">
