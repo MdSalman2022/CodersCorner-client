@@ -11,6 +11,7 @@ interface AuthContextType {
   signInWithGoogle: () => Promise<void>;
   signInWithGithub: () => Promise<void>;
   signOut: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -20,8 +21,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState(session?.user || null);
 
   useEffect(() => {
-    setUser(session?.user || null);
-  }, [session]);
+    if (session?.user && !isPending) {
+      fetchUserData(session.user);
+    } else {
+      setUser(null);
+    }
+  }, [session, isPending]);
+
+  // Fetch complete user data from our API (includes role info)
+  const fetchUserData = async (sessionUser: any) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/user/me`, {
+        method: "POST", // Change to POST
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: sessionUser.id,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const userData = data.user;
+
+        console.log("Auth Context - API Response:", data);
+        console.log("Auth Context - User Data:", userData);
+        console.log("Auth Context - Role Name:", userData.roleName);
+
+        // Ensure roleName is set
+        if (!userData.roleName && userData.role) {
+          userData.roleName = userData.role.name;
+        }
+
+        setUser(userData);
+        localStorage.setItem("user", JSON.stringify(userData));
+      } else {
+        console.error(
+          "Auth Context - API call failed:",
+          response.status,
+          response.statusText
+        );
+      }
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      // Fallback to session user
+      setUser(sessionUser);
+    }
+  };
 
   // Sync user profile to userinfo collection after authentication
   useEffect(() => {
@@ -75,6 +122,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         if (createResponse.ok) {
           console.log("✅ User profile created in userinfo collection");
+          // Refresh user data after profile creation
+          if (session?.user) {
+            fetchUserData(session.user);
+          }
         } else {
           console.error("❌ Failed to create user profile");
         }
@@ -152,8 +203,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("🔄 Auth Context: Calling signOut...");
       await authClient.signOut();
       console.log("✅ Auth Context: Sign out successful");
+      setUser(null);
+      localStorage.removeItem("user");
+      // Redirect to home page after sign out
+      window.location.href = "http://localhost:3000/";
     } catch (error) {
       console.error("❌ Auth Context: Sign out error:", error);
+      throw error;
+    }
+  };
+
+  const refreshUser = async () => {
+    try {
+      console.log("🔄 Auth Context: Refreshing user data...");
+      if (session?.user) {
+        await fetchUserData(session.user);
+        console.log("✅ Auth Context: User data refreshed");
+      }
+    } catch (error) {
+      console.error("❌ Auth Context: Refresh user error:", error);
       throw error;
     }
   };
@@ -168,6 +236,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signInWithGoogle,
         signInWithGithub,
         signOut,
+        refreshUser,
       }}
     >
       {children}
