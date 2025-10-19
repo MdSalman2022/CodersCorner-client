@@ -107,8 +107,12 @@ export function MediumHeader({
             <Button
               variant="ghost"
               size="sm"
-              onClick={onMobileMenuToggle}
-              className="lg:hidden mr-2"
+              onClick={() => {
+                if (onMobileMenuToggle) {
+                  onMobileMenuToggle();
+                }
+              }}
+              className="md:hidden mr-2"
             >
               <Menu className="h-5 w-5" />
             </Button>
