@@ -36,7 +36,7 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/bookmarks/ids?userId=${user.id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookmarks/ids?userId=${user.id}`,
         {
           method: "GET",
           headers: {

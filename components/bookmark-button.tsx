@@ -37,8 +37,8 @@ export function BookmarkButton({ postId, size = "sm" }: BookmarkButtonProps) {
 
     try {
       const endpoint = wasBookmarked
-        ? `http://localhost:5000/api/bookmarks/${postId}?userId=${user.id}`
-        : "http://localhost:5000/api/bookmarks";
+        ? `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookmarks/${postId}?userId=${user.id}`
+        : `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookmarks`;
 
       const method = wasBookmarked ? "DELETE" : "POST";
 

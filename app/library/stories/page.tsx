@@ -59,7 +59,7 @@ export default function StoriesPage() {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/posts?userId=${user?.id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?userId=${user?.id}`,
         {
           method: "GET",
           headers: {
@@ -85,7 +85,7 @@ export default function StoriesPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/posts/${postId}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts/${postId}`,
         {
           method: "DELETE",
           headers: {

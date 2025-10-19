@@ -70,9 +70,9 @@ export default function TopicPage() {
 
       // Fetch posts with this topic/tag
       const response = await fetch(
-        `http://localhost:5000/api/posts?tag=${encodeURIComponent(
-          topic as string
-        )}&limit=20`
+        `${
+          process.env.NEXT_PUBLIC_SERVER_URL
+        }/api/posts?tag=${encodeURIComponent(topic as string)}&limit=20`
       );
       if (response.ok) {
         const data = await response.json();

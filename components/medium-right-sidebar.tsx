@@ -45,7 +45,7 @@ export function MediumRightSidebar({
     try {
       // Get posts with most comments, sorted by recent activity
       const response = await fetch(
-        "http://localhost:5000/api/posts?limit=5&sort=comments"
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?limit=5&sort=comments`
       );
       if (response.ok) {
         const data = await response.json();
@@ -91,7 +91,7 @@ export function MediumRightSidebar({
       className={
         isMobile
           ? "w-full"
-          : "w-80 h-screen sticky top-16 border-l bg-background p-6 overflow-y-auto"
+          : "w-80 h-screen sticky top-0 border-l bg-background p-6 overflow-y-auto"
       }
     >
       <div className={isMobile ? "space-y-6" : "space-y-8"}>

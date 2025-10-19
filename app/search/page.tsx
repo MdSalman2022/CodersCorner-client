@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Search, Heart, MessageCircle, Clock } from "lucide-react";
 import { Header } from "@/components/header";
-import { MediumHeader } from "@/components/medium-header";
 
 interface Post {
   _id: string;
@@ -57,9 +56,9 @@ export default function SearchPage() {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/posts/search?q=${encodeURIComponent(
-          searchQuery
-        )}`
+        `${
+          process.env.NEXT_PUBLIC_SERVER_URL
+        }/api/posts/search?q=${encodeURIComponent(searchQuery)}`
       );
       if (response.ok) {
         const posts = await response.json();
@@ -83,8 +82,6 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <MediumHeader />
-
       <main className="max-w-7xl mx-auto px-4 py-8 max-w-4xl">
         {/* Search Header */}
         <div className="space-y-8">

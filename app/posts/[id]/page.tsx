@@ -23,7 +23,6 @@ import {
   Bell,
   BellOff,
 } from "lucide-react";
-import { MediumHeader } from "@/components/medium-header";
 import { useAuth } from "@/lib/auth-context";
 
 interface Post {
@@ -113,7 +112,9 @@ export default function PostPage() {
   const fetchPost = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/api/posts/${id}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts/${id}`
+      );
       if (response.ok) {
         const postData = await response.json();
         setPost(postData);
@@ -130,7 +131,7 @@ export default function PostPage() {
   const fetchComments = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/comments/post/${id}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/comments/post/${id}`
       );
       if (response.ok) {
         const commentsData = await response.json();
@@ -147,7 +148,7 @@ export default function PostPage() {
     if (!post) return;
     try {
       const response = await fetch(
-        `http://localhost:5000/api/posts?author=${post.author.userId}&limit=5`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?author=${post.author.userId}&limit=5`
       );
       if (response.ok) {
         const data = await response.json();
@@ -167,7 +168,7 @@ export default function PostPage() {
     if (!user || !post) return;
     try {
       const response = await fetch(
-        `http://localhost:5000/api/users/${post.author.userId}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${post.author.userId}`
       );
       if (response.ok) {
         const authorData = await response.json();
@@ -192,7 +193,7 @@ export default function PostPage() {
     setCommentLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:5000/api/comments/post/${id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/comments/post/${id}`,
         {
           method: "POST",
           headers: {
@@ -232,7 +233,7 @@ export default function PostPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/posts/${id}/like`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts/${id}/like`,
         {
           method: "POST",
           headers: {
@@ -257,7 +258,7 @@ export default function PostPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/users/${post.author.userId}/follow`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${post.author.userId}/follow`,
         {
           method: "POST",
           headers: {
@@ -302,7 +303,6 @@ export default function PostPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <MediumHeader />
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="animate-pulse space-y-4">
             <div className="h-8 bg-muted rounded w-3/4"></div>
@@ -317,7 +317,6 @@ export default function PostPage() {
   if (error || !post) {
     return (
       <div className="min-h-screen bg-background">
-        <MediumHeader />
         <div className="max-w-7xl mx-auto px-4 py-8 text-center">
           <h1 className="text-2xl font-bold mb-4">Post Not Found</h1>
           <p className="text-muted-foreground mb-4">{error}</p>
@@ -334,8 +333,6 @@ export default function PostPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <MediumHeader />
-
       {/* Main Content Layout */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-12 gap-8">

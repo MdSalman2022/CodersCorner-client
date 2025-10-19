@@ -94,13 +94,16 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/stats", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: user?.betterAuthId || user?.id }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/stats`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId: user?.betterAuthId || user?.id }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -113,18 +116,21 @@ export default function AdminDashboard() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user?.betterAuthId || user?.id,
-          page: 1,
-          limit: 10,
-          search: userSearch,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/users`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user?.betterAuthId || user?.id,
+            page: 1,
+            limit: 10,
+            search: userSearch,
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -137,19 +143,22 @@ export default function AdminDashboard() {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          userId: user?.betterAuthId || user?.id,
-          page: 1,
-          limit: 10,
-          status: postStatus,
-          search: postSearch,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/posts`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user?.betterAuthId || user?.id,
+            page: 1,
+            limit: 10,
+            status: postStatus,
+            search: postSearch,
+          }),
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -165,7 +174,7 @@ export default function AdminDashboard() {
   const updateUserRole = async (userId: string, newRole: string) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/users/${userId}/role`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/users/${userId}/role`,
         {
           method: "PUT",
           headers: {
@@ -193,7 +202,7 @@ export default function AdminDashboard() {
   const updatePostStatus = async (postId: string, newStatus: string) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/posts/${postId}/status`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/posts/${postId}/status`,
         {
           method: "PUT",
           headers: {
@@ -223,7 +232,7 @@ export default function AdminDashboard() {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/posts/${postId}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/posts/${postId}`,
         {
           method: "DELETE",
           headers: {
@@ -248,7 +257,7 @@ export default function AdminDashboard() {
   const toggleFeatured = async (postId: string, currentFeatured: boolean) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/posts/${postId}/featured`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/posts/${postId}/featured`,
         {
           method: "PUT",
           headers: {

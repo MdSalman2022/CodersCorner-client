@@ -3,17 +3,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Home,
-  BookOpen,
-  User,
-  BarChart3,
-  Users,
-  Bookmark,
-  PenTool,
-} from "lucide-react";
+import { Home, User, BarChart3, Users, Bookmark, PenTool } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { useBookmarks } from "@/lib/bookmark-context";
 
 interface FollowingUser {
   _id: string;
@@ -44,7 +37,7 @@ export function MediumSidebar({
   const fetchFollowing = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/users/${user?.id}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user?.id}`
       );
       if (response.ok) {
         const userData = await response.json();
@@ -59,8 +52,11 @@ export function MediumSidebar({
 
   const menuItems = [
     { icon: Home, label: "Home", href: "/" },
-    { icon: Bookmark, label: "Library", href: "/library" },
-    { icon: PenTool, label: "Stories", href: "/library/stories" },
+    {
+      icon: Bookmark,
+      label: "My Content",
+      href: "/my-content",
+    },
     {
       icon: User,
       label: "Profile",
@@ -72,7 +68,7 @@ export function MediumSidebar({
   return (
     <aside
       className={`${
-        isMobile ? "w-full h-full" : "w-72 md:h-screen sticky top-16 border-r"
+        isMobile ? "w-full h-full" : "w-72 md:h-fit sticky top-0"
       } bg-background md:p-6 overflow-y-auto`}
     >
       <nav className="space-y-2">

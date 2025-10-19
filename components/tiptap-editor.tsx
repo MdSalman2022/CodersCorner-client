@@ -92,10 +92,10 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
 
         setIsUploadingImage(true);
         setUploadProgress(0);
-        
+
         // Simulate upload progress
         const progressInterval = setInterval(() => {
-          setUploadProgress(prev => {
+          setUploadProgress((prev) => {
             if (prev >= 90) {
               clearInterval(progressInterval);
               return 90;
@@ -112,7 +112,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           formData.append("image", file);
 
           const response = await fetch(
-            "http://localhost:5000/api/uploads/single",
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/api/uploads/single`,
             {
               method: "POST",
               body: formData,
@@ -126,14 +126,20 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             const data = await response.json();
             // Insert the uploaded image into the editor
             editor.chain().focus().setImage({ src: data.image.url }).run();
-            toast.success("Image uploaded successfully!", { id: "image-upload" });
+            toast.success("Image uploaded successfully!", {
+              id: "image-upload",
+            });
           } else {
             const error = await response.json();
-            toast.error(error.error || "Failed to upload image", { id: "image-upload" });
+            toast.error(error.error || "Failed to upload image", {
+              id: "image-upload",
+            });
           }
         } catch (error) {
           console.error("Image upload error:", error);
-          toast.error("Failed to upload image. Please try again.", { id: "image-upload" });
+          toast.error("Failed to upload image. Please try again.", {
+            id: "image-upload",
+          });
           clearInterval(progressInterval);
         } finally {
           setIsUploadingImage(false);
@@ -165,8 +171,14 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-            className={`h-8 w-8 p-0 ${editor.isActive("heading", { level: 1 }) ? "bg-primary text-primary-foreground" : ""}`}
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 1 }).run()
+            }
+            className={`h-8 w-8 p-0 ${
+              editor.isActive("heading", { level: 1 })
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }`}
             title="Heading 1"
           >
             <Heading1 className="h-4 w-4" />
@@ -174,8 +186,14 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-            className={`h-8 w-8 p-0 ${editor.isActive("heading", { level: 2 }) ? "bg-primary text-primary-foreground" : ""}`}
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 2 }).run()
+            }
+            className={`h-8 w-8 p-0 ${
+              editor.isActive("heading", { level: 2 })
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }`}
             title="Heading 2"
           >
             <Heading2 className="h-4 w-4" />
@@ -183,8 +201,14 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-            className={`h-8 w-8 p-0 ${editor.isActive("heading", { level: 3 }) ? "bg-primary text-primary-foreground" : ""}`}
+            onClick={() =>
+              editor.chain().focus().toggleHeading({ level: 3 }).run()
+            }
+            className={`h-8 w-8 p-0 ${
+              editor.isActive("heading", { level: 3 })
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }`}
             title="Heading 3"
           >
             <Heading3 className="h-4 w-4" />
@@ -197,7 +221,11 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleBold().run()}
-            className={`h-8 w-8 p-0 ${editor.isActive("bold") ? "bg-primary text-primary-foreground" : ""}`}
+            className={`h-8 w-8 p-0 ${
+              editor.isActive("bold")
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }`}
             title="Bold"
           >
             <Bold className="h-4 w-4" />
@@ -206,7 +234,11 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={`h-8 w-8 p-0 ${editor.isActive("italic") ? "bg-primary text-primary-foreground" : ""}`}
+            className={`h-8 w-8 p-0 ${
+              editor.isActive("italic")
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }`}
             title="Italic"
           >
             <Italic className="h-4 w-4" />
@@ -215,7 +247,11 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleStrike().run()}
-            className={`h-8 w-8 p-0 ${editor.isActive("strike") ? "bg-primary text-primary-foreground" : ""}`}
+            className={`h-8 w-8 p-0 ${
+              editor.isActive("strike")
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }`}
             title="Strikethrough"
           >
             <Strikethrough className="h-4 w-4" />
@@ -224,7 +260,11 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleCode().run()}
-            className={`h-8 w-8 p-0 ${editor.isActive("code") ? "bg-primary text-primary-foreground" : ""}`}
+            className={`h-8 w-8 p-0 ${
+              editor.isActive("code")
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }`}
             title="Inline Code"
           >
             <Code className="h-4 w-4" />
@@ -237,7 +277,11 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={`h-8 w-8 p-0 ${editor.isActive("bulletList") ? "bg-primary text-primary-foreground" : ""}`}
+            className={`h-8 w-8 p-0 ${
+              editor.isActive("bulletList")
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }`}
             title="Bullet List"
           >
             <List className="h-4 w-4" />
@@ -246,7 +290,11 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={`h-8 w-8 p-0 ${editor.isActive("orderedList") ? "bg-primary text-primary-foreground" : ""}`}
+            className={`h-8 w-8 p-0 ${
+              editor.isActive("orderedList")
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }`}
             title="Numbered List"
           >
             <ListOrdered className="h-4 w-4" />
@@ -255,7 +303,11 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleBlockquote().run()}
-            className={`h-8 w-8 p-0 ${editor.isActive("blockquote") ? "bg-primary text-primary-foreground" : ""}`}
+            className={`h-8 w-8 p-0 ${
+              editor.isActive("blockquote")
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }`}
             title="Quote"
           >
             <Quote className="h-4 w-4" />
@@ -264,7 +316,11 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-            className={`h-8 w-8 p-0 ${editor.isActive("codeBlock") ? "bg-primary text-primary-foreground" : ""}`}
+            className={`h-8 w-8 p-0 ${
+              editor.isActive("codeBlock")
+                ? "bg-primary text-primary-foreground"
+                : ""
+            }`}
             title="Code Block"
           >
             <Code className="h-4 w-4" />
@@ -273,9 +329,9 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
 
         {/* Media */}
         <div className="flex items-center gap-1 border-r pr-2">
-          <Button 
-            variant="ghost" 
-            size="sm" 
+          <Button
+            variant="ghost"
+            size="sm"
             onClick={addLink}
             className="h-8 w-8 p-0"
             title="Add Link"
@@ -287,7 +343,9 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             size="sm"
             onClick={addImage}
             disabled={isUploadingImage}
-            className={`h-8 w-8 p-0 relative ${isUploadingImage ? "bg-primary/10" : ""}`}
+            className={`h-8 w-8 p-0 relative ${
+              isUploadingImage ? "bg-primary/10" : ""
+            }`}
             title="Upload Image"
           >
             {isUploadingImage ? (
@@ -295,7 +353,7 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
                 <Loader2 className="h-4 w-4 animate-spin" />
                 {uploadProgress > 0 && (
                   <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-muted rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-primary transition-all duration-300"
                       style={{ width: `${uploadProgress}%` }}
                     />
@@ -340,10 +398,12 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
           <div className="flex-1">
             <div className="flex items-center justify-between mb-1">
               <span className="text-sm font-medium">Uploading image...</span>
-              <span className="text-xs text-muted-foreground">{uploadProgress}%</span>
+              <span className="text-xs text-muted-foreground">
+                {uploadProgress}%
+              </span>
             </div>
             <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-              <div 
+              <div
                 className="h-full bg-primary transition-all duration-300 ease-out rounded-full"
                 style={{ width: `${uploadProgress}%` }}
               />
@@ -354,8 +414,8 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
 
       {/* Editor Content */}
       <div className="bg-background">
-        <EditorContent 
-          editor={editor} 
+        <EditorContent
+          editor={editor}
           className="prose prose-sm sm:prose lg:prose-lg max-w-none p-6 min-h-[500px] focus:outline-none
             [&_.ProseMirror]:outline-none
             [&_.ProseMirror]:min-h-[500px]

@@ -26,7 +26,6 @@ import { Header } from "@/components/header";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
-import { MediumHeader } from "@/components/medium-header";
 
 export default function Write() {
   const { user } = useAuth();
@@ -60,10 +59,13 @@ export default function Write() {
       const formData = new FormData();
       formData.append("image", file);
 
-      const response = await fetch("http://localhost:5000/api/uploads/single", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/uploads/single`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (response.ok) {
         const result = await response.json();
@@ -92,24 +94,27 @@ export default function Write() {
 
     setIsPublishing(true);
     try {
-      const response = await fetch("http://localhost:5000/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: title.trim(),
-          content,
-          tags: tags
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter((tag) => tag),
-          category: category.trim(),
-          status: "published",
-          userId: user.id,
-          coverImage: coverImage.trim(),
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: title.trim(),
+            content,
+            tags: tags
+              .split(",")
+              .map((tag) => tag.trim())
+              .filter((tag) => tag),
+            category: category.trim(),
+            status: "published",
+            userId: user.id,
+            coverImage: coverImage.trim(),
+          }),
+        }
+      );
 
       if (response.ok) {
         const post = await response.json();
@@ -135,24 +140,27 @@ export default function Write() {
 
     setIsSaving(true);
     try {
-      const response = await fetch("http://localhost:5000/api/posts", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: title.trim() || "Untitled Draft",
-          content,
-          tags: tags
-            .split(",")
-            .map((tag) => tag.trim())
-            .filter((tag) => tag),
-          category: category.trim(),
-          status: "draft",
-          userId: user.id,
-          coverImage: coverImage.trim(),
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            title: title.trim() || "Untitled Draft",
+            content,
+            tags: tags
+              .split(",")
+              .map((tag) => tag.trim())
+              .filter((tag) => tag),
+            category: category.trim(),
+            status: "draft",
+            userId: user.id,
+            coverImage: coverImage.trim(),
+          }),
+        }
+      );
 
       if (response.ok) {
         toast.success("Draft saved successfully!");
@@ -178,8 +186,6 @@ export default function Write() {
 
   return (
     <div className="min-h-screen bg-background">
-      <MediumHeader />
-
       {/* Header Actions */}
       <div className="max-w-7xl mx-auto border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-16 z-40 shadow-sm">
         <div className="px-4 py-3">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -50,12 +51,18 @@ interface UserPost {
   tags: string[];
 }
 
-export default function LibraryPage() {
+export default function MyContentPage() {
   const { user } = useAuth();
   const { removeBookmark } = useBookmarks();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab") as
+    | "bookmarks"
+    | "published"
+    | "draft"
+    | null;
   const [activeTab, setActiveTab] = useState<
     "bookmarks" | "published" | "draft"
-  >("bookmarks");
+  >(tabParam || "bookmarks");
   const [bookmarkedPosts, setBookmarkedPosts] = useState<SavedPost[]>([]);
   const [userPosts, setUserPosts] = useState<UserPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,6 +79,7 @@ export default function LibraryPage() {
 
   const fetchBookmarkedPosts = async () => {
     try {
+      setLoading(true);
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/bookmarks?userId=${user?.id}`,
         {
@@ -85,16 +93,18 @@ export default function LibraryPage() {
       if (response.ok) {
         const data = await response.json();
         setBookmarkedPosts(data.bookmarks || []);
-        setLoading(false);
       }
     } catch (error) {
       console.error("Failed to fetch bookmarked posts:", error);
       toast.error("Failed to load bookmarks");
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchUserPosts = async () => {
     try {
+      setLoading(true);
       const status = activeTab === "published" ? "published" : "draft";
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?status=${status}&userId=${user?.id}`,
@@ -113,6 +123,8 @@ export default function LibraryPage() {
     } catch (error) {
       console.error("Failed to fetch user posts:", error);
       toast.error("Failed to load posts");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -176,12 +188,12 @@ export default function LibraryPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BookOpen className="h-5 w-5" />
-              Library
+              My Content
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-muted-foreground">
-              Sign in to access your personal library of saved stories.
+              Sign in to access your personal content library.
             </p>
             <Button asChild>
               <Link href="/auth/login">Sign In</Link>
@@ -214,10 +226,11 @@ export default function LibraryPage() {
           <div className="mb-8">
             <h1 className="text-3xl font-bold flex items-center gap-3 mb-2">
               <BookOpen className="h-8 w-8" />
-              Your Library
+              My Content
             </h1>
             <p className="text-muted-foreground">
-              Manage your saved stories and published/draft posts
+              Manage your bookmarks, published stories, and drafts all in one
+              place
             </p>
           </div>
 

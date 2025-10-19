@@ -76,7 +76,7 @@ export function MediumFeed() {
   };
 
   const PostCard = ({ post }: { post: Post }) => (
-    <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-sm overflow-hidden">
+    <Card className="hover:shadow-lg transition-all duration-300 shadow-sm overflow-hidden border-x-0 rounded-none border-t">
       <CardHeader className="pb-3 md:pb-4">
         <div className="flex items-center gap-3 mb-3">
           <Avatar className="h-8 w-8 md:h-10 md:w-10 ring-2 ring-primary/10">
@@ -153,14 +153,17 @@ export function MediumFeed() {
 
   if (loading) {
     return (
-      <main className="flex-1 p-4 md:p-6 lg:p-8">
+      <main className="flex-1 p-4 md:p-6 lg:p-8  ">
         <div className="max-w-full md:max-w-2xl lg:max-w-3xl mx-auto space-y-6 md:space-y-8">
           <div className="animate-pulse space-y-6">
             {[1, 2, 3, 4, 5].map((i) => (
-              <Card key={i} className="border-0 shadow-sm">
+              <Card
+                key={i}
+                className="border-t border-b border-border/50 shadow-sm"
+              >
                 <CardHeader className="pb-3 md:pb-4">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="h-8 w-8 md:h-10 md:h-10 bg-muted rounded-full"></div>
+                    <div className="h-8 w-8 md:h-10 bg-muted rounded-full"></div>
                     <div className="flex-1 space-y-2">
                       <div className="h-4 bg-muted rounded w-32"></div>
                       <div className="h-3 bg-muted rounded w-48"></div>
@@ -196,10 +199,10 @@ export function MediumFeed() {
   }
 
   return (
-    <main className="flex-1 p-4 md:p-6 lg:p-8">
+    <main className="flex-1 p-4 md:p-6 lg:py-0 lg:px-0 border-x-2">
       <div className="max-w-full md:max-w-2xl lg:max-w-3xl mx-auto">
         <Tabs defaultValue="discover" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-6 md:mb-8">
+          <TabsList className="grid w-full grid-cols-2 mb-6 md:mb-0">
             <TabsTrigger
               value="discover"
               className="flex items-center gap-2 text-sm"
@@ -215,10 +218,9 @@ export function MediumFeed() {
               <span className="hidden sm:inline">Following</span>
             </TabsTrigger>
           </TabsList>
-
-          <TabsContent value="discover" className="space-y-6 md:space-y-8">
+          <TabsContent value="discover" className="space-y-6 md:space-y-0">
             {discoverPosts.length === 0 ? (
-              <Card>
+              <Card className="border-t border-b border-border/50">
                 <CardContent className="pt-6 text-center">
                   <TrendingUp className="h-10 w-10 md:h-12 md:w-12 mx-auto text-muted-foreground mb-4" />
                   <h3 className="text-base md:text-lg font-semibold mb-2">
@@ -236,9 +238,9 @@ export function MediumFeed() {
             )}
           </TabsContent>
 
-          <TabsContent value="following" className="space-y-6 md:space-y-8">
+          <TabsContent value="following" className="space-y-6 md:space-y-0">
             {!user ? (
-              <Card>
+              <Card className="border-t border-b border-border/50">
                 <CardContent className="pt-6 text-center">
                   <Users className="h-10 w-10 md:h-12 md:w-12 mx-auto text-muted-foreground mb-4" />
                   <h3 className="text-base md:text-lg font-semibold mb-2">
@@ -254,7 +256,7 @@ export function MediumFeed() {
                 </CardContent>
               </Card>
             ) : followingPosts.length === 0 ? (
-              <Card>
+              <Card className="border-t border-b border-border/50">
                 <CardContent className="pt-6 text-center">
                   <Users className="h-10 w-10 md:h-12 md:w-12 mx-auto text-muted-foreground mb-4" />
                   <h3 className="text-base md:text-lg font-semibold mb-2">

@@ -42,7 +42,7 @@ export function FeaturedPosts() {
   const fetchFeaturedPosts = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/posts?featured=true&limit=3"
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?featured=true&limit=3`
       );
       if (response.ok) {
         const data = await response.json();

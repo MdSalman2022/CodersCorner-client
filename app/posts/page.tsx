@@ -21,9 +21,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import { Header } from "@/components/header";
-import { useAuth } from "@/lib/auth-context";
-import { MediumHeader } from "@/components/medium-header";
-
+import { useAuth } from "@/lib/auth-context"; 
 interface Post {
   _id: string;
   title: string;
@@ -56,7 +54,9 @@ export default function Posts() {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/api/posts");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts`
+      );
       if (response.ok) {
         const data = await response.json();
         setPosts(data.posts);
@@ -72,8 +72,7 @@ export default function Posts() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <MediumHeader />
+      <div className="min-h-screen bg-background"> 
         <main className="container mx-auto px-4 py-8 max-w-4xl">
           <div className="animate-pulse space-y-8">
             {[1, 2, 3].map((i) => (
@@ -117,8 +116,7 @@ export default function Posts() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-background">
-        <MediumHeader />
+      <div className="min-h-screen bg-background"> 
         <main className="container mx-auto px-4 py-8 max-w-4xl text-center">
           <h1 className="text-2xl font-bold mb-4">Error Loading Posts</h1>
           <p className="text-muted-foreground mb-4">{error}</p>
@@ -129,8 +127,7 @@ export default function Posts() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <MediumHeader />
+    <div className="min-h-screen bg-background"> 
 
       {/* Header with Write Button */}
       <div className="border-b bg-gradient-to-r from-background via-muted/20 to-background">

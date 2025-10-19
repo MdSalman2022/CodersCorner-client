@@ -109,7 +109,7 @@ export default function ProfileEditPage() {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/api/users/${user?.id}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user?.id}`
       );
       if (response.ok) {
         const profileData = await response.json();

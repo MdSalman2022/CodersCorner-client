@@ -61,7 +61,7 @@ export default function StatsPage() {
 
       // Fetch user overall stats
       const userStatsResponse = await fetch(
-        `http://localhost:5000/api/stats/user/${user?.id}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/user/${user?.id}`,
         {
           method: "GET",
           headers: {
@@ -77,7 +77,7 @@ export default function StatsPage() {
 
       // Fetch post-specific stats
       const postStatsResponse = await fetch(
-        `http://localhost:5000/api/stats/posts?userId=${user?.id}&timeRange=${timeRange}`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/posts?userId=${user?.id}&timeRange=${timeRange}`,
         {
           method: "GET",
           headers: {
@@ -245,7 +245,10 @@ export default function StatsPage() {
         <div className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-xl font-bold">Post Performance</h2>
-            <Tabs value={timeRange} onValueChange={(val) => setTimeRange(val as any)}>
+            <Tabs
+              value={timeRange}
+              onValueChange={(val) => setTimeRange(val as any)}
+            >
               <TabsList>
                 <TabsTrigger value="week">Week</TabsTrigger>
                 <TabsTrigger value="month">Month</TabsTrigger>
@@ -272,7 +275,10 @@ export default function StatsPage() {
           ) : (
             <div className="space-y-4">
               {postStats.map((post) => (
-                <Card key={post._id} className="hover:shadow-md transition-shadow">
+                <Card
+                  key={post._id}
+                  className="hover:shadow-md transition-shadow"
+                >
                   <CardContent className="pt-6">
                     <div className="space-y-4">
                       <div>
@@ -291,7 +297,9 @@ export default function StatsPage() {
                         <div className="flex items-center gap-2">
                           <Eye className="h-4 w-4 text-muted-foreground" />
                           <div>
-                            <p className="text-sm text-muted-foreground">Views</p>
+                            <p className="text-sm text-muted-foreground">
+                              Views
+                            </p>
                             <p className="text-xl font-bold">{post.views}</p>
                           </div>
                         </div>
@@ -299,7 +307,9 @@ export default function StatsPage() {
                         <div className="flex items-center gap-2">
                           <BookOpen className="h-4 w-4 text-muted-foreground" />
                           <div>
-                            <p className="text-sm text-muted-foreground">Reads</p>
+                            <p className="text-sm text-muted-foreground">
+                              Reads
+                            </p>
                             <p className="text-xl font-bold">{post.reads}</p>
                           </div>
                         </div>
@@ -307,7 +317,9 @@ export default function StatsPage() {
                         <div className="flex items-center gap-2">
                           <Heart className="h-4 w-4 text-muted-foreground" />
                           <div>
-                            <p className="text-sm text-muted-foreground">Likes</p>
+                            <p className="text-sm text-muted-foreground">
+                              Likes
+                            </p>
                             <p className="text-xl font-bold">{post.likes}</p>
                           </div>
                         </div>

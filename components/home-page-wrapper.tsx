@@ -20,17 +20,8 @@ interface HomePageWrapperProps {
 export function HomePageWrapper({ children }: HomePageWrapperProps) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-  const handleMobileMenuToggle = () => {
-    setIsMobileSidebarOpen(!isMobileSidebarOpen);
-  };
-
   return (
     <div className="min-h-screen bg-background">
-      <MediumHeader
-        onMobileMenuToggle={handleMobileMenuToggle}
-        isMobileMenuOpen={isMobileSidebarOpen}
-      />
-
       {/* Mobile Sidebar Drawer - Contains both left and right sidebars */}
       <Sheet open={isMobileSidebarOpen} onOpenChange={setIsMobileSidebarOpen}>
         <SheetContent side="left" className="w-80 p-0 overflow-y-auto">
@@ -64,8 +55,10 @@ export function HomePageWrapper({ children }: HomePageWrapperProps) {
       <div className="max-w-7xl mx-auto">
         <div className="flex">
           {/* Desktop Sidebar - Hidden on mobile */}
-          <div className="hidden lg:block">
-            <MediumSidebar />
+          <div className="hidden lg:block sticky top-0 h-screen overflow-y-auto">
+            <div className="p-6">
+              <MediumSidebar />
+            </div>
           </div>
 
           {/* Main Feed - Full width on mobile, adjusted on desktop */}
