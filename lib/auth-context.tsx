@@ -20,11 +20,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = useSession();
   const [user, setUser] = useState(session?.user || null);
 
+  // Auto-refresh session every 30 minutes to prevent expiration
   useEffect(() => {
+    if (session?.user) {
+      const refreshInterval = setInterval(async () => {
+        try {
+          await authClient.refreshSession();
+          console.log("🔄 Session refreshed automatically");
+        } catch (error) {
+          console.error("Failed to refresh session:", error);
+        }
+      }, 30 * 60 * 1000); // 30 minutes
+
+      return () => clearInterval(refreshInterval);
+    }
+  }, [session?.user]);
+
+  useEffect(() => {
+    console.log("🔍 Auth Context - Session changed:", {
+      hasSession: !!session,
+      isPending,
+      userId: session?.user?.id,
+      userEmail: session?.user?.email,
+    });
+
     if (session?.user && !isPending) {
       fetchUserData(session.user);
-    } else {
+    } else if (!session && !isPending) {
+      console.log("🔄 Auth Context - No session, clearing user");
       setUser(null);
+      localStorage.removeItem("user");
     }
   }, [session, isPending]);
 
@@ -32,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const fetchUserData = async (sessionUser: any) => {
     try {
       const response = await fetch(`http://localhost:5000/api/user/me`, {
-        method: "POST", // Change to POST
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -54,6 +79,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           userData.roleName = userData.role.name;
         }
 
+        // CRITICAL: Ensure user.id is always the betterAuthId
+        if (!userData.id) {
+          userData.id = userData.betterAuthId || sessionUser.id;
+          console.log("⚠️ Fixed missing user.id:", userData.id);
+        }
+
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
       } else {
@@ -62,20 +93,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           response.status,
           response.statusText
         );
+        // If API fails, fall back to session user but don't set as logged in
+        if (response.status === 401 || response.status === 404) {
+          console.log("🔄 Session expired or user not found, clearing session");
+          await signOut();
+        }
       }
     } catch (error) {
       console.error("Failed to fetch user data:", error);
-      // Fallback to session user
+      // If network error, keep session user as fallback but mark as loading
       setUser(sessionUser);
     }
   };
 
-  // Sync user profile to userinfo collection after authentication
+  // Periodic session validation
   useEffect(() => {
-    if (user && !isPending) {
-      syncUserProfile(user);
+    if (user) {
+      const validateSession = async () => {
+        try {
+          const currentSession = await authClient.getSession();
+          if (!currentSession?.data?.user) {
+            console.log("🔄 Session expired, signing out...");
+            await signOut();
+          }
+        } catch (error) {
+          console.error("Session validation failed:", error);
+        }
+      };
+
+      // Check session validity every 5 minutes
+      const sessionCheck = setInterval(validateSession, 5 * 60 * 1000);
+
+      return () => clearInterval(sessionCheck);
     }
-  }, [user, isPending]);
+  }, [user]);
 
   const syncUserProfile = async (user: any) => {
     try {

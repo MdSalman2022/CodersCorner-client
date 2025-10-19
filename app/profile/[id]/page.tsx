@@ -16,8 +16,8 @@ import {
   FileText,
   Heart,
 } from "lucide-react";
-import { Header } from "@/components/header";
 import { useAuth } from "@/lib/auth-context";
+import { MediumHeader } from "@/components/medium-header";
 
 interface UserProfile {
   userId: string;
@@ -162,7 +162,7 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <MediumHeader />
         <main className="container mx-auto px-4 py-8 max-w-4xl">
           <div className="animate-pulse space-y-6">
             <div className="flex items-center gap-6">
@@ -182,7 +182,7 @@ export default function ProfilePage() {
   if (error || !profile) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <MediumHeader />
         <main className="container mx-auto px-4 py-8 max-w-4xl text-center">
           <h1 className="text-2xl font-bold mb-4">Profile Not Found</h1>
           <p className="text-muted-foreground mb-4">{error}</p>
@@ -198,7 +198,7 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <MediumHeader />
 
       <main className="max-w-7xl mx-auto px-4 py-8 max-w-4xl">
         {/* Profile Header */}

@@ -159,41 +159,46 @@ export default function ProfileEditPage() {
 
   const addSkill = () => {
     if (newSkill.trim() && !formData.skills.includes(newSkill.trim())) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        skills: [...prev.skills, newSkill.trim()]
+        skills: [...prev.skills, newSkill.trim()],
       }));
       setNewSkill("");
     }
   };
 
   const removeSkill = (skillToRemove: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      skills: prev.skills.filter(skill => skill !== skillToRemove)
+      skills: prev.skills.filter((skill) => skill !== skillToRemove),
     }));
   };
 
   const addTopic = () => {
-    if (newTopic.trim() && !formData.preferences.topics.includes(newTopic.trim())) {
-      setFormData(prev => ({
+    if (
+      newTopic.trim() &&
+      !formData.preferences.topics.includes(newTopic.trim())
+    ) {
+      setFormData((prev) => ({
         ...prev,
         preferences: {
           ...prev.preferences,
-          topics: [...prev.preferences.topics, newTopic.trim()]
-        }
+          topics: [...prev.preferences.topics, newTopic.trim()],
+        },
       }));
       setNewTopic("");
     }
   };
 
   const removeTopic = (topicToRemove: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       preferences: {
         ...prev.preferences,
-        topics: prev.preferences.topics.filter(topic => topic !== topicToRemove)
-      }
+        topics: prev.preferences.topics.filter(
+          (topic) => topic !== topicToRemove
+        ),
+      },
     }));
   };
 
@@ -471,6 +476,9 @@ export default function ProfileEditPage() {
                       No skills added yet. Add some skills to showcase your
                       expertise!
                     </p>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
 
             <TabsContent value="preferences" className="space-y-6">
@@ -484,16 +492,19 @@ export default function ProfileEditPage() {
                 <CardContent className="space-y-6">
                   <div className="space-y-4">
                     <div>
-                      <Label className="text-base font-medium">Favorite Topics</Label>
+                      <Label className="text-base font-medium">
+                        Favorite Topics
+                      </Label>
                       <p className="text-sm text-muted-foreground mb-3">
-                        Add topics you're interested in to personalize your feed.
+                        Add topics you're interested in to personalize your
+                        feed.
                       </p>
                       <div className="flex gap-2 mb-3">
                         <Input
                           value={newTopic}
                           onChange={(e) => setNewTopic(e.target.value)}
                           placeholder="Add a topic..."
-                          onKeyPress={(e) => e.key === 'Enter' && addTopic()}
+                          onKeyPress={(e) => e.key === "Enter" && addTopic()}
                         />
                         <Button onClick={addTopic} size="sm">
                           <Plus className="h-4 w-4" />
@@ -502,7 +513,11 @@ export default function ProfileEditPage() {
 
                       <div className="flex flex-wrap gap-2">
                         {formData.preferences.topics.map((topic) => (
-                          <Badge key={topic} variant="outline" className="flex items-center gap-1">
+                          <Badge
+                            key={topic}
+                            variant="outline"
+                            className="flex items-center gap-1"
+                          >
                             {topic}
                             <X
                               className="h-3 w-3 cursor-pointer hover:text-destructive"
@@ -514,14 +529,18 @@ export default function ProfileEditPage() {
 
                       {formData.preferences.topics.length === 0 && (
                         <p className="text-sm text-muted-foreground mt-2">
-                          No topics added yet. Add some topics to personalize your experience!
+                          No topics added yet. Add some topics to personalize
+                          your experience!
                         </p>
                       )}
                     </div>
 
                     <div className="flex items-center justify-between p-4 border rounded-lg">
                       <div>
-                        <Label htmlFor="darkMode" className="text-base font-medium">
+                        <Label
+                          htmlFor="darkMode"
+                          className="text-base font-medium"
+                        >
                           Dark Mode
                         </Label>
                         <p className="text-sm text-muted-foreground">
@@ -532,9 +551,12 @@ export default function ProfileEditPage() {
                         id="darkMode"
                         checked={formData.preferences.darkMode}
                         onCheckedChange={(checked) =>
-                          setFormData(prev => ({
+                          setFormData((prev) => ({
                             ...prev,
-                            preferences: { ...prev.preferences, darkMode: checked }
+                            preferences: {
+                              ...prev.preferences,
+                              darkMode: checked,
+                            },
                           }))
                         }
                       />
@@ -543,6 +565,7 @@ export default function ProfileEditPage() {
                 </CardContent>
               </Card>
             </TabsContent>
+          </Tabs>
         </div>
       </main>
     </div>

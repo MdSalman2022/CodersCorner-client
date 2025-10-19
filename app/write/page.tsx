@@ -79,63 +79,6 @@ export default function Write() {
     }
   };
 
-  const handleImageUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const files = event.target.files;
-    if (!files || files.length === 0) return;
-
-    const file = files[0];
-    if (file.size > 5 * 1024 * 1024) {
-      // 5MB limit
-      toast.error("Image size must be less than 5MB");
-      return;
-    }
-
-    try {
-      const formData = new FormData();
-      formData.append("image", file);
-
-      const response = await fetch("http://localhost:5000/api/uploads/single", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        const newImage = {
-          url: result.image.url,
-          publicId: result.image.publicId,
-          alt: "",
-          caption: "",
-        };
-
-        setUploadedImages((prev) => [...prev, newImage]);
-        toast.success("Image uploaded successfully!");
-      } else {
-        toast.error("Failed to upload image");
-      }
-    } catch (err) {
-      toast.error("Failed to upload image");
-    }
-  };
-
-  const removeImage = (index: number) => {
-    setUploadedImages((prev) => prev.filter((_, i) => i !== index));
-  };
-
-  const updateImageAlt = (index: number, alt: string) => {
-    setUploadedImages((prev) =>
-      prev.map((img, i) => (i === index ? { ...img, alt } : img))
-    );
-  };
-
-  const updateImageCaption = (index: number, caption: string) => {
-    setUploadedImages((prev) =>
-      prev.map((img, i) => (i === index ? { ...img, caption } : img))
-    );
-  };
-
   const handlePublish = async () => {
     if (!user) {
       toast.error("Please sign in to publish");
@@ -239,82 +182,84 @@ export default function Write() {
 
       {/* Header Actions */}
       <div className="max-w-7xl mx-auto border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-16 z-40 shadow-sm">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Link href="/">
-              <Button variant="ghost" size="sm" className="gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                <span className="hidden sm:inline">Back</span>
-              </Button>
-            </Link>
-            <div className="hidden md:flex items-center gap-2">
-              <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-sm text-muted-foreground">
-                {user ? `${user.name || user.email}` : "Not signed in"}
-              </span>
+        <div className="px-4 py-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Link href="/">
+                <Button variant="ghost" size="sm" className="gap-2">
+                  <ArrowLeft className="h-4 w-4" />
+                  <span className="hidden sm:inline">Back</span>
+                </Button>
+              </Link>
+              <div className="hidden md:flex items-center gap-2">
+                <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                <span className="text-sm text-muted-foreground">
+                  {user ? `${user.name || user.email}` : "Not signed in"}
+                </span>
+              </div>
             </div>
-          </div>
 
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleSaveDraft}
-              disabled={isSaving || !user}
-              className="gap-2"
-            >
-              {isSaving ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span className="hidden sm:inline">Saving...</span>
-                </>
-              ) : (
-                <>
-                  <Save className="h-4 w-4" />
-                  <span className="hidden sm:inline">Save Draft</span>
-                </>
-              )}
-            </Button>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSaveDraft}
+                disabled={isSaving || !user}
+                className="gap-1 sm:gap-2"
+              >
+                {isSaving ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="hidden sm:inline">Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="h-4 w-4" />
+                    <span className="hidden sm:inline">Save Draft</span>
+                  </>
+                )}
+              </Button>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handlePreview}
-              className="gap-2"
-            >
-              <Eye className="h-4 w-4" />
-              <span className="hidden sm:inline">Preview</span>
-            </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handlePreview}
+                className="gap-1 sm:gap-2"
+              >
+                <Eye className="h-4 w-4" />
+                <span className="hidden sm:inline">Preview</span>
+              </Button>
 
-            <Button
-              size="sm"
-              onClick={handlePublish}
-              disabled={
-                isPublishing || !user || !title.trim() || !content.trim()
-              }
-              className="gap-2 bg-primary hover:bg-primary/90"
-            >
-              {isPublishing ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Publishing...</span>
-                </>
-              ) : (
-                <>
-                  <Send className="h-4 w-4" />
-                  <span>Publish</span>
-                </>
-              )}
-            </Button>
+              <Button
+                size="sm"
+                onClick={handlePublish}
+                disabled={
+                  isPublishing || !user || !title.trim() || !content.trim()
+                }
+                className="gap-1 sm:gap-2 bg-primary hover:bg-primary/90"
+              >
+                {isPublishing ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span className="hidden sm:inline">Publishing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4" />
+                    <span className="hidden sm:inline">Publish</span>
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
 
       {/* Editor */}
       <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-12 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
           {/* Main Content - Content Editor */}
-          <div className="col-span-9 space-y-8">
+          <div className="col-span-1 md:col-span-9 space-y-8 order-1">
             {/* Title Section */}
             <div className="space-y-3">
               <div className="border-b border-muted pb-2">
@@ -322,7 +267,7 @@ export default function Write() {
                   placeholder="Post title..."
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="text-4xl font-bold border-none shadow-none px-0 focus-visible:ring-0 placeholder:text-muted-foreground/60 bg-transparent h-auto py-2"
+                  className="text-3xl md:text-4xl font-bold border-none shadow-none px-0 focus-visible:ring-0 placeholder:text-muted-foreground/60 bg-transparent h-auto py-2"
                 />
               </div>
               {title.length > 0 && (
@@ -334,7 +279,7 @@ export default function Write() {
 
             {/* Content Editor - Full Width */}
             <div className="space-y-4">
-              <div className="min-h-[600px] border border-muted/50 rounded-lg overflow-hidden focus-within:border-primary/50 transition-colors">
+              <div className="min-h-[400px] md:min-h-[600px] border border-muted/50 rounded-lg overflow-hidden focus-within:border-primary/50 transition-colors">
                 <TiptapEditor content={content} onChange={setContent} />
               </div>
               {content.length > 0 && (
@@ -354,7 +299,7 @@ export default function Write() {
           </div>
 
           {/* Right Sidebar - Cover Image & Metadata */}
-          <aside className="col-span-3 space-y-8">
+          <aside className="col-span-1 md:col-span-3 space-y-6 md:space-y-8 order-2">
             {/* Cover Image Section */}
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -477,9 +422,9 @@ export default function Write() {
 
       {/* Preview Modal */}
       <Dialog open={showPreview} onOpenChange={setShowPreview}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto mx-4">
           <DialogHeader>
-            <DialogTitle className="text-2xl">Preview</DialogTitle>
+            <DialogTitle className="text-xl md:text-2xl">Preview</DialogTitle>
           </DialogHeader>
           <div className="space-y-6">
             {/* Cover Image */}
@@ -488,7 +433,7 @@ export default function Write() {
                 <img
                   src={coverImage}
                   alt="Cover"
-                  className="w-full h-64 object-cover"
+                  className="w-full h-48 md:h-64 object-cover"
                 />
               </div>
             )}
@@ -514,15 +459,15 @@ export default function Write() {
 
             {/* Article Header */}
             <div className="space-y-4">
-              <h1 className="text-4xl font-bold leading-tight">
+              <h1 className="text-3xl md:text-4xl font-bold leading-tight">
                 {title || "Untitled Post"}
               </h1>
 
               {/* Metadata */}
-              <div className="flex items-center gap-4 text-sm text-muted-foreground pb-4 border-b">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-sm text-muted-foreground pb-4 border-b">
                 <div className="flex items-center gap-2">
-                  <div className="h-10 w-10 bg-primary/10 rounded-full flex items-center justify-center">
-                    <span className="text-primary font-semibold">
+                  <div className="h-8 w-8 md:h-10 md:w-10 bg-primary/10 rounded-full flex items-center justify-center">
+                    <span className="text-primary font-semibold text-sm md:text-base">
                       {user?.name?.[0] || user?.email?.[0] || "U"}
                     </span>
                   </div>
@@ -539,22 +484,27 @@ export default function Write() {
                     </p>
                   </div>
                 </div>
-                <span>•</span>
-                <span>{content.split(/\s+/).filter(Boolean).length} words</span>
-                <span>•</span>
-                <span>
-                  {Math.ceil(content.split(/\s+/).filter(Boolean).length / 200)}{" "}
-                  min read
-                </span>
+                <div className="flex items-center gap-4 text-xs sm:text-sm">
+                  <span>
+                    {content.split(/\s+/).filter(Boolean).length} words
+                  </span>
+                  <span>•</span>
+                  <span>
+                    {Math.ceil(
+                      content.split(/\s+/).filter(Boolean).length / 200
+                    )}{" "}
+                    min read
+                  </span>
+                </div>
               </div>
             </div>
 
             {/* Article Content */}
             <div
-              className="prose prose-lg max-w-none dark:prose-invert
+              className="prose prose-base md:prose-lg max-w-none dark:prose-invert
                 prose-headings:font-bold prose-headings:tracking-tight
-                prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl
-                prose-p:text-lg prose-p:leading-relaxed
+                prose-h1:text-3xl prose-h2:text-2xl prose-h3:text-xl
+                prose-p:text-base prose-p:leading-relaxed
                 prose-a:text-primary prose-a:no-underline hover:prose-a:underline
                 prose-img:rounded-lg prose-img:shadow-md
                 prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded

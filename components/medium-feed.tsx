@@ -6,16 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Heart,
-  MessageCircle,
-  Clock,
-  Bookmark,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+import { Heart, MessageCircle, Clock, TrendingUp, Users } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import { BookmarkButton } from "@/components/bookmark-button";
 
 interface Post {
   _id: string;
@@ -51,7 +45,9 @@ export function MediumFeed() {
 
   const fetchDiscoverPosts = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/posts?limit=20");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?limit=20`
+      );
       if (response.ok) {
         const data = await response.json();
         setDiscoverPosts(data.posts);
@@ -67,7 +63,9 @@ export function MediumFeed() {
     try {
       // In a real app, this would fetch posts from followed users
       // For now, just fetch recent posts
-      const response = await fetch("http://localhost:5000/api/posts?limit=15");
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?limit=15`
+      );
       if (response.ok) {
         const data = await response.json();
         setFollowingPosts(data.posts);
@@ -79,15 +77,15 @@ export function MediumFeed() {
 
   const PostCard = ({ post }: { post: Post }) => (
     <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-sm overflow-hidden">
-      <CardHeader className="pb-4">
+      <CardHeader className="pb-3 md:pb-4">
         <div className="flex items-center gap-3 mb-3">
-          <Avatar className="h-10 w-10 ring-2 ring-primary/10">
+          <Avatar className="h-8 w-8 md:h-10 md:w-10 ring-2 ring-primary/10">
             <AvatarImage src={post.author.avatar} />
-            <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+            <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
               {post.author.name[0]}
             </AvatarFallback>
           </Avatar>
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <Link
               href={`/profile/${post.author.userId}`}
               className="font-semibold text-sm hover:text-primary transition-colors"
@@ -104,10 +102,10 @@ export function MediumFeed() {
             </div>
           </div>
         </div>
-        <CardTitle className="text-xl group-hover:text-primary transition-colors cursor-pointer leading-tight">
+        <CardTitle className="text-lg md:text-xl group-hover:text-primary transition-colors cursor-pointer leading-tight">
           <Link href={`/posts/${post._id}`}>{post.title}</Link>
         </CardTitle>
-        <p className="text-muted-foreground line-clamp-3 text-base">
+        <p className="text-muted-foreground line-clamp-3 text-sm md:text-base">
           {post.excerpt}
         </p>
       </CardHeader>
@@ -129,7 +127,7 @@ export function MediumFeed() {
               </Badge>
             )}
           </div>
-          <div className="flex items-center gap-4 text-muted-foreground">
+          <div className="flex items-center gap-2 md:gap-4 text-muted-foreground">
             <Button
               variant="ghost"
               size="sm"
@@ -146,9 +144,7 @@ export function MediumFeed() {
               <MessageCircle className="h-4 w-4 mr-1" />
               <span className="text-sm">{post.comments.length}</span>
             </Button>
-            <Button variant="ghost" size="sm" className="h-8 px-2">
-              <Bookmark className="h-4 w-4" />
-            </Button>
+            <BookmarkButton postId={post._id} />
           </div>
         </div>
       </CardContent>
@@ -157,20 +153,20 @@ export function MediumFeed() {
 
   if (loading) {
     return (
-      <main className="flex-1 p-8">
-        <div className="max-w-2xl mx-auto space-y-8">
+      <main className="flex-1 p-4 md:p-6 lg:p-8">
+        <div className="max-w-full md:max-w-2xl lg:max-w-3xl mx-auto space-y-6 md:space-y-8">
           <div className="animate-pulse space-y-6">
             {[1, 2, 3, 4, 5].map((i) => (
               <Card key={i} className="border-0 shadow-sm">
-                <CardHeader className="pb-4">
+                <CardHeader className="pb-3 md:pb-4">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="h-10 w-10 bg-muted rounded-full"></div>
+                    <div className="h-8 w-8 md:h-10 md:h-10 bg-muted rounded-full"></div>
                     <div className="flex-1 space-y-2">
                       <div className="h-4 bg-muted rounded w-32"></div>
                       <div className="h-3 bg-muted rounded w-48"></div>
                     </div>
                   </div>
-                  <div className="h-6 bg-muted rounded w-3/4 mb-3"></div>
+                  <div className="h-5 md:h-6 bg-muted rounded w-3/4 mb-3"></div>
                   <div className="space-y-2">
                     <div className="h-4 bg-muted rounded w-full"></div>
                     <div className="h-4 bg-muted rounded w-5/6"></div>
@@ -184,7 +180,7 @@ export function MediumFeed() {
                       <div className="h-6 bg-muted rounded-full w-20"></div>
                       <div className="h-6 bg-muted rounded-full w-14"></div>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 md:gap-4">
                       <div className="h-4 bg-muted rounded w-8"></div>
                       <div className="h-4 bg-muted rounded w-8"></div>
                       <div className="h-4 bg-muted rounded w-6"></div>
@@ -200,27 +196,35 @@ export function MediumFeed() {
   }
 
   return (
-    <main className="flex-1 p-8">
-      <div className="max-w-3xl mx-auto">
+    <main className="flex-1 p-4 md:p-6 lg:p-8">
+      <div className="max-w-full md:max-w-2xl lg:max-w-3xl mx-auto">
         <Tabs defaultValue="discover" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="discover" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-2 mb-6 md:mb-8">
+            <TabsTrigger
+              value="discover"
+              className="flex items-center gap-2 text-sm"
+            >
               <TrendingUp className="h-4 w-4" />
-              Discover
+              <span className="hidden sm:inline">Discover</span>
             </TabsTrigger>
-            <TabsTrigger value="following" className="flex items-center gap-2">
+            <TabsTrigger
+              value="following"
+              className="flex items-center gap-2 text-sm"
+            >
               <Users className="h-4 w-4" />
-              Following
+              <span className="hidden sm:inline">Following</span>
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="discover" className="space-y-8">
+          <TabsContent value="discover" className="space-y-6 md:space-y-8">
             {discoverPosts.length === 0 ? (
               <Card>
                 <CardContent className="pt-6 text-center">
-                  <TrendingUp className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No stories yet</h3>
-                  <p className="text-muted-foreground">
+                  <TrendingUp className="h-10 w-10 md:h-12 md:w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-base md:text-lg font-semibold mb-2">
+                    No stories yet
+                  </h3>
+                  <p className="text-sm md:text-base text-muted-foreground">
                     Be the first to share your knowledge with the community!
                   </p>
                 </CardContent>
@@ -232,15 +236,15 @@ export function MediumFeed() {
             )}
           </TabsContent>
 
-          <TabsContent value="following" className="space-y-8">
+          <TabsContent value="following" className="space-y-6 md:space-y-8">
             {!user ? (
               <Card>
                 <CardContent className="pt-6 text-center">
-                  <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">
+                  <Users className="h-10 w-10 md:h-12 md:w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-base md:text-lg font-semibold mb-2">
                     Sign in to see following
                   </h3>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-sm md:text-base text-muted-foreground mb-4">
                     Follow developers and topics to see their latest stories
                     here.
                   </p>
@@ -252,11 +256,11 @@ export function MediumFeed() {
             ) : followingPosts.length === 0 ? (
               <Card>
                 <CardContent className="pt-6 text-center">
-                  <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">
+                  <Users className="h-10 w-10 md:h-12 md:w-12 mx-auto text-muted-foreground mb-4" />
+                  <h3 className="text-base md:text-lg font-semibold mb-2">
                     No stories from following
                   </h3>
-                  <p className="text-muted-foreground mb-4">
+                  <p className="text-sm md:text-base text-muted-foreground mb-4">
                     Follow some developers or topics to see their stories here.
                   </p>
                   <Button variant="outline" asChild>

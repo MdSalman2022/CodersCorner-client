@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Search, Heart, MessageCircle, Clock } from "lucide-react";
 import { Header } from "@/components/header";
+import { MediumHeader } from "@/components/medium-header";
 
 interface Post {
   _id: string;
@@ -82,7 +83,7 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <MediumHeader />
 
       <main className="max-w-7xl mx-auto px-4 py-8 max-w-4xl">
         {/* Search Header */}

@@ -25,7 +25,13 @@ interface Topic {
   color: string;
 }
 
-export function MediumRightSidebar() {
+interface MediumRightSidebarProps {
+  isMobile?: boolean;
+}
+
+export function MediumRightSidebar({
+  isMobile = false,
+}: MediumRightSidebarProps = {}) {
   const [discussions, setDiscussions] = useState<DiscussionPost[]>([]);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,8 +87,14 @@ export function MediumRightSidebar() {
   };
 
   return (
-    <aside className="w-80 h-screen sticky top-16 border-l bg-background p-6 overflow-y-auto">
-      <div className="space-y-8">
+    <aside
+      className={
+        isMobile
+          ? "w-full"
+          : "w-80 h-screen sticky top-16 border-l bg-background p-6 overflow-y-auto"
+      }
+    >
+      <div className={isMobile ? "space-y-6" : "space-y-8"}>
         {/* Active Discussions */}
         <Card>
           <CardHeader className="pb-4">

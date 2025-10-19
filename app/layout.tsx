@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { AuthProvider } from "@/lib/auth-context";
+import { BookmarkProvider } from "@/lib/bookmark-context";
 import { Toaster } from "sonner";
 import "./globals.css";
 
@@ -47,8 +48,10 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
-            <Toaster />
+            <BookmarkProvider>
+              {children}
+              <Toaster />
+            </BookmarkProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

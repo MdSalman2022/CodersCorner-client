@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Header } from "@/components/header";
 import { useAuth } from "@/lib/auth-context";
+import { MediumHeader } from "@/components/medium-header";
 
 interface Post {
   _id: string;
@@ -72,7 +73,7 @@ export default function Posts() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <MediumHeader />
         <main className="container mx-auto px-4 py-8 max-w-4xl">
           <div className="animate-pulse space-y-8">
             {[1, 2, 3].map((i) => (
@@ -117,7 +118,7 @@ export default function Posts() {
   if (error) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <MediumHeader />
         <main className="container mx-auto px-4 py-8 max-w-4xl text-center">
           <h1 className="text-2xl font-bold mb-4">Error Loading Posts</h1>
           <p className="text-muted-foreground mb-4">{error}</p>
@@ -129,7 +130,7 @@ export default function Posts() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <MediumHeader />
 
       {/* Header with Write Button */}
       <div className="border-b bg-gradient-to-r from-background via-muted/20 to-background">
