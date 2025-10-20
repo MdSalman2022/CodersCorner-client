@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { AuthProvider } from "@/lib/auth-context";
 import { BookmarkProvider } from "@/lib/bookmark-context";
+import { FeedProvider } from "@/lib/feed-context";
 import { UniversalLayout } from "@/components/universal-layout";
 import { Toaster } from "sonner";
 import "./globals.css";
@@ -50,8 +51,10 @@ export default function RootLayout({
         >
           <AuthProvider>
             <BookmarkProvider>
-              <UniversalLayout>{children}</UniversalLayout>
-              <Toaster />
+              <FeedProvider>
+                <UniversalLayout>{children}</UniversalLayout>
+                <Toaster />
+              </FeedProvider>
             </BookmarkProvider>
           </AuthProvider>
         </ThemeProvider>
