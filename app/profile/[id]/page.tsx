@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ import { useAuth } from "@/lib/auth-context";
 
 interface UserProfile {
   userId: string;
+  betterAuthId: string;
   name: string;
   email: string;
   avatar?: string;
@@ -63,18 +64,9 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [isOwnProfile, setIsOwnProfile] = useState(false);
 
-  useEffect(() => {
-    if (id) {
-      fetchProfile();
-    }
-  }, [id]);
-
-  useEffect(() => {
-    if (profile && user) {
-      setIsFollowing(profile.followers.includes(user.id));
-    }
-  }, [profile, user]);
+  console.log("isOwnProfile", isOwnProfile);
 
   const fetchProfile = async () => {
     try {
@@ -90,12 +82,41 @@ export default function ProfilePage() {
       } else {
         setError("Profile not found");
       }
-    } catch (err) {
+    } catch {
       setError("Failed to load profile");
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (id) {
+      fetchProfile();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
+  console.log("user id", user);
+  console.log("profile userid", profile);
+
+  useEffect(() => {
+    if (profile && user) {
+      // Check if this is your own profile
+      const isOwn = user.id === profile.betterAuthId;
+      setIsOwnProfile(isOwn);
+
+      // Only check following status if it's NOT your own profile
+      if (!isOwn && user._id) {
+        // profile.followers contains user IDs (MongoDB ObjectIds)
+        // Check if current user's MongoDB _id is in the followers array
+        const isFollowingThisUser = profile.followers.includes(user._id);
+        setIsFollowing(isFollowingThisUser);
+      }
+    } else if (!user) {
+      setIsOwnProfile(false);
+    }
+  }, [profile, user]);
+
+  console.log("isFollowing", isFollowing);
 
   const fetchUserPosts = async () => {
     try {
@@ -106,22 +127,31 @@ export default function ProfilePage() {
         const data = await response.json();
         setPosts(data.posts);
       }
-    } catch (error) {
-      console.error("Failed to fetch user posts:", error);
+    } catch {
+      console.error("Failed to fetch user posts");
     }
   };
 
   const handleFollow = async () => {
+    // Prevent self-follow
+    if (user?.id === profile?.betterAuthId) {
+      alert("You cannot follow yourself");
+      return;
+    }
+
     if (!user) {
       alert("Please sign in to follow users");
       return;
     }
 
     try {
+      // Use DELETE method for unfollow, POST for follow
+      const method = isFollowing ? "DELETE" : "POST";
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${id}/follow`,
         {
-          method: "POST",
+          method,
           headers: {
             "Content-Type": "application/json",
           },
@@ -130,24 +160,9 @@ export default function ProfilePage() {
       );
 
       if (response.ok) {
-        setIsFollowing(!isFollowing);
-        // Update follower count
-        setProfile((prev) =>
-          prev
-            ? {
-                ...prev,
-                followers: isFollowing
-                  ? prev.followers.filter((f) => f !== user.id)
-                  : [...prev.followers, user.id],
-                stats: {
-                  ...prev.stats,
-                  followersCount: isFollowing
-                    ? prev.stats.followersCount - 1
-                    : prev.stats.followersCount + 1,
-                },
-              }
-            : null
-        );
+        // Refetch the profile to get updated followers array
+        console.log("🔄 Refetching profile after follow/unfollow...");
+        await fetchProfile();
       } else {
         const error = await response.json();
         alert(
@@ -193,11 +208,9 @@ export default function ProfilePage() {
     );
   }
 
-  const isOwnProfile = user?.id === profile.userId;
-
   return (
     <div className="min-h-screen bg-background">
-      <main className="max-w-7xl mx-auto px-4 py-8 max-w-4xl">
+      <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Profile Header */}
         <div className="space-y-6">
           <Card>
@@ -302,7 +315,7 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Action Button */}
-                  {!isOwnProfile && user && (
+                  {!isOwnProfile && (
                     <Button
                       onClick={handleFollow}
                       variant={isFollowing ? "outline" : "default"}

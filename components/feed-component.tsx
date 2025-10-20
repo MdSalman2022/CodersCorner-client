@@ -158,7 +158,7 @@ export const FeedComponent: React.FC<FeedComponentProps> = ({
                 <Heart
                   size={16}
                   className={
-                    post.likes?.includes(user?.id)
+                    user?.id && post.likes?.includes(user.id)
                       ? "fill-red-500 text-red-500"
                       : ""
                   }

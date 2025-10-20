@@ -3,8 +3,23 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { authClient, useSession } from "@/lib/auth";
 
+interface User {
+  _id?: string;
+  id: string;
+  name: string;
+  email: string;
+  image?: string | null;
+  betterAuthId?: string;
+  roleName?: string;
+  role?: Record<string, unknown>;
+  createdAt?: Date;
+  updatedAt?: Date;
+  emailVerified?: boolean;
+  [key: string]: unknown;
+}
+
 interface AuthContextType {
-  user: any;
+  user: User | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (name: string, email: string, password: string) => Promise<void>;
@@ -25,7 +40,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (session?.user) {
       const refreshInterval = setInterval(async () => {
         try {
-          await authClient.refreshSession();
+          // Refresh by getting new session
+          await authClient.getSession();
           console.log("🔄 Session refreshed automatically");
         } catch (error) {
           console.error("Failed to refresh session:", error);
@@ -51,10 +67,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       localStorage.removeItem("user");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, isPending]);
 
   // Fetch complete user data from our API (includes role info)
-  const fetchUserData = async (sessionUser: any) => {
+  const fetchUserData = async (sessionUser: User) => {
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/me`,
@@ -90,6 +107,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
+      } else if (response.status === 404) {
+        // User profile doesn't exist, need to sync
+        const errorData = await response.json();
+        if (errorData.needsSync) {
+          console.log("🔄 User profile not found, syncing...");
+
+          // Call sync-profile to create the profile
+          try {
+            const syncResponse = await fetch(
+              `${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/sync-profile`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  userId: sessionUser.id,
+                  email: sessionUser.email,
+                  name: sessionUser.name,
+                  image: sessionUser.image,
+                }),
+              }
+            );
+
+            if (syncResponse.ok) {
+              console.log("✅ User profile synced, fetching data again...");
+              // Retry fetching user data
+              await fetchUserData(sessionUser);
+              return;
+            } else {
+              console.error(
+                "Failed to sync profile:",
+                await syncResponse.json()
+              );
+            }
+          } catch (syncError) {
+            console.error("Error syncing profile:", syncError);
+          }
+        }
+
+        // If sync failed, clear session
+        console.log("❌ Could not sync user profile, signing out");
+        await signOut();
       } else {
         console.error(
           "Auth Context - API call failed:",
@@ -97,15 +157,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           response.statusText
         );
         // If API fails, fall back to session user but don't set as logged in
-        if (response.status === 401 || response.status === 404) {
-          console.log("🔄 Session expired or user not found, clearing session");
+        if (response.status === 401) {
+          console.log("🔄 Session expired, clearing session");
           await signOut();
         }
       }
     } catch (error) {
       console.error("Failed to fetch user data:", error);
       // If network error, keep session user as fallback but mark as loading
-      setUser(sessionUser);
+      setUser(sessionUser as unknown as typeof user);
     }
   };
 
@@ -131,66 +191,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [user]);
 
-  const syncUserProfile = async (user: any) => {
+  // Helper function to sync user profile with backend
+  const syncUserProfile = async (
+    userId: string,
+    email: string,
+    name: string,
+    image?: string | null
+  ) => {
     try {
-      // Check if user profile exists in our userinfo collection
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user.id}`
-      );
-      const profileExists = response.ok;
-
-      if (!profileExists) {
-        // Create user profile in userinfo collection
-        const createResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              betterAuthId: user.id,
-              name: user.name || "User",
-              email: user.email,
-              avatar: user.image || null,
-              bio: null,
-              website: null,
-              location: null,
-              skills: [],
-              socialLinks: {
-                github: null,
-                linkedin: null,
-                twitter: null,
-              },
-              followers: [],
-              following: [],
-              preferences: {
-                topics: [],
-                darkMode: false,
-              },
-              stats: {
-                postsCount: 0,
-                followersCount: 0,
-                followingCount: 0,
-              },
-            }),
-          }
-        );
-
-        if (createResponse.ok) {
-          console.log("✅ User profile created in userinfo collection");
-          // Refresh user data after profile creation
-          if (session?.user) {
-            fetchUserData(session.user);
-          }
-        } else {
-          console.error("❌ Failed to create user profile");
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/sync-profile`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId,
+            email,
+            name,
+            image: image || undefined,
+          }),
         }
+      );
+
+      if (response.ok) {
+        console.log("✅ Auth Context: Profile synced with backend");
+        return true;
       } else {
-        console.log("✅ User profile already exists");
+        const errorData = await response.json();
+        console.warn("⚠️  Auth Context: Failed to sync profile:", errorData);
+        return false;
       }
     } catch (error) {
-      console.error("❌ Error syncing user profile:", error);
+      console.warn("⚠️  Auth Context: Profile sync error:", error);
+      return false;
     }
   };
 
@@ -202,7 +237,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
         name,
       });
+
       console.log("✅ Auth Context: Signup successful");
+
+      // Wait for session to be established
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      // Get the session to get userId
+      const session = await authClient.getSession();
+      console.log("🔄 Auth Context: Got session:", session);
+
+      if (session?.data?.user?.id) {
+        // Sync profile with backend
+        await syncUserProfile(
+          session.data.user.id,
+          session.data.user.email,
+          session.data.user.name,
+          session.data.user.image
+        );
+      }
+
       // Redirect to home page after successful signup
       window.location.href = "http://localhost:3000/";
     } catch (error) {
@@ -230,11 +284,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const signInWithGoogle = async () => {
     try {
       console.log("🔄 Auth Context: Calling Google sign-in...");
+
+      // Initiate Google sign-in
       await authClient.signIn.social({
         provider: "google",
         callbackURL: "http://localhost:3000/",
       });
-      console.log("✅ Auth Context: Google sign-in initiated");
+
+      console.log("✅ Auth Context: Google sign-in completed, redirecting...");
+      // Better Auth handles the redirect automatically
     } catch (error) {
       console.error("❌ Auth Context: Google sign-in error:", error);
       throw error;
