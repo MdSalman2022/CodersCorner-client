@@ -6,6 +6,10 @@ import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
 import CodeBlock from "@tiptap/extension-code-block";
 import Placeholder from "@tiptap/extension-placeholder";
+import Table from "@tiptap/extension-table";
+import TableRow from "@tiptap/extension-table-row";
+import TableHeader from "@tiptap/extension-table-header";
+import TableCell from "@tiptap/extension-table-cell";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import {
@@ -25,6 +29,7 @@ import {
   Heading3,
   Strikethrough,
   UploadCloud,
+  Grid3x3,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -55,6 +60,27 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
         languageClassPrefix: "language-",
         HTMLAttributes: {
           class: "bg-muted p-4 rounded-lg font-mono text-sm overflow-x-auto",
+        },
+      }),
+      Table.configure({
+        resizable: true,
+        HTMLAttributes: {
+          class: "border-collapse border border-muted",
+        },
+      }),
+      TableRow.configure({
+        HTMLAttributes: {
+          class: "border border-muted",
+        },
+      }),
+      TableHeader.configure({
+        HTMLAttributes: {
+          class: "border border-muted bg-muted/50 font-semibold p-2",
+        },
+      }),
+      TableCell.configure({
+        HTMLAttributes: {
+          class: "border border-muted p-2",
         },
       }),
       Placeholder.configure({
@@ -324,6 +350,25 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
             title="Code Block"
           >
             <Code className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Table */}
+        <div className="flex items-center gap-1 border-r pr-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() =>
+              editor
+                .chain()
+                .focus()
+                .insertTable({ rows: 3, cols: 3, withHeaderRow: true })
+                .run()
+            }
+            className="h-8 w-8 p-0"
+            title="Insert Table (3x3)"
+          >
+            <Grid3x3 className="h-4 w-4" />
           </Button>
         </div>
 

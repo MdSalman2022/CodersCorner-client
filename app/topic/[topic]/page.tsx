@@ -136,40 +136,19 @@ export default function TopicPage() {
           <div className="max-w-4xl">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h1 className="text-4xl font-bold mb-2">{topicData.name}</h1>
+                <h1 className="text-4xl font-bold mb-2">
+                  {"#" + topicData.name}
+                </h1>
                 <p className="text-lg text-muted-foreground mb-4">
                   {topicData.description}
                 </p>
                 <div className="flex items-center gap-6 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-4 w-4" />
-                    <span>
-                      {topicData.followers.toLocaleString()} followers
-                    </span>
-                  </div>
                   <div className="flex items-center gap-2">
                     <FileText className="h-4 w-4" />
                     <span>{topicData.posts.length} stories</span>
                   </div>
                 </div>
               </div>
-              <Button
-                onClick={handleFollow}
-                variant={topicData.isFollowing ? "outline" : "default"}
-                className="flex items-center gap-2"
-              >
-                {topicData.isFollowing ? (
-                  <>
-                    <UserCheck className="h-4 w-4" />
-                    Following
-                  </>
-                ) : (
-                  <>
-                    <UserPlus className="h-4 w-4" />
-                    Follow
-                  </>
-                )}
-              </Button>
             </div>
           </div>
         </div>

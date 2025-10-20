@@ -35,6 +35,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
+import Image from "next/image";
+import coderscornerLogo from "@/public/assets/coderscorner.png";
 
 interface MediumHeaderProps {
   onMobileMenuToggle?: () => void;
@@ -117,11 +119,12 @@ export function MediumHeader({
               <Menu className="h-5 w-5" />
             </Button>
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">
-                  CC
-                </span>
-              </div>
+              {/* <Image
+                src={coderscornerLogo}
+                alt="Coders Corner"
+                width={120}
+                height={40}
+              /> */}
               <span className="font-bold text-xl hidden sm:block">
                 Coders Corner
               </span>
@@ -282,7 +285,7 @@ export function MediumHeader({
             ) : (
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/auth/login">
-                  <User className="h-4 w-4" />
+                  <span>Login</span>
                 </Link>
               </Button>
             )}

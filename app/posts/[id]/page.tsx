@@ -12,7 +12,6 @@ import {
   Clock,
   Heart,
   MessageCircle,
-  Bookmark,
   ArrowLeft,
   Send,
   Share2,
@@ -24,6 +23,7 @@ import {
   BellOff,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { BookmarkButton } from "@/components/bookmark-button";
 
 interface Post {
   _id: string;
@@ -48,7 +48,7 @@ interface Post {
   updatedAt?: string;
   readingTime: number;
   likes: string[];
-  comments: any[];
+  comments: Comment[];
   isFeatured: boolean;
 }
 
@@ -90,6 +90,7 @@ export default function PostPage() {
     if (id) {
       fetchPost();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -100,11 +101,14 @@ export default function PostPage() {
         checkFollowStatus();
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post, user]);
 
   useEffect(() => {
     if (post && user) {
-      setLiked(post.likes.includes(user.id));
+      // Check if current user's MongoDB _id is in likes array
+      // The likes array should contain user MongoDB ObjectIds
+      setLiked(post.likes.includes(user._id || user.id));
       setLikesCount(post.likes.length);
     }
   }, [post, user]);
@@ -112,8 +116,10 @@ export default function PostPage() {
   const fetchPost = async () => {
     try {
       setLoading(true);
+      // Add trackView=true only on initial load, not on refetch
+      const trackView = !post ? "true" : "false";
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts/${id}`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts/${id}?trackView=${trackView}`
       );
       if (response.ok) {
         const postData = await response.json();
@@ -122,6 +128,7 @@ export default function PostPage() {
         setError("Post not found");
       }
     } catch (err) {
+      // Handle fetch error
       setError("Failed to load post");
     } finally {
       setLoading(false);
@@ -172,7 +179,9 @@ export default function PostPage() {
       );
       if (response.ok) {
         const authorData = await response.json();
-        setIsFollowing(authorData.followers?.includes(user.id) || false);
+        // Check if current user's MongoDB _id is in followers array
+        const isFollowingThisUser = authorData.followers?.includes(user._id);
+        setIsFollowing(isFollowingThisUser || false);
       }
     } catch (error) {
       console.error("Failed to check follow status:", error);
@@ -239,28 +248,44 @@ export default function PostPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId: user.id }),
+          body: JSON.stringify({ userId: user.id }), // Send Better Auth ID
         }
       );
 
       if (response.ok) {
         const data = await response.json();
-        setLikesCount(data.likes);
-        setLiked(!liked);
+
+        // Update post with new likes array and toggle liked state
+        if (post) {
+          setPost({
+            ...post,
+            likes: data.likes || post.likes,
+          });
+          setLikesCount(
+            data.likesCount || data.likes?.length || post.likes.length
+          );
+          setLiked(!liked);
+        }
+      } else {
+        const error = await response.json();
+        alert(`Failed to like post: ${error.message}`);
       }
     } catch (error) {
       console.error("Like error:", error);
+      alert("Failed to like post");
     }
   };
-
   const handleFollow = async () => {
     if (!user || !post) return;
 
     try {
+      // Use DELETE method for unfollow, POST for follow
+      const method = isFollowing ? "DELETE" : "POST";
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${post.author.userId}/follow`,
         {
-          method: "POST",
+          method,
           headers: {
             "Content-Type": "application/json",
           },
@@ -269,7 +294,8 @@ export default function PostPage() {
       );
 
       if (response.ok) {
-        setIsFollowing(!isFollowing);
+        // Refetch follow status to get updated followers array
+        await checkFollowStatus();
       } else {
         const error = await response.json();
         alert(
@@ -291,6 +317,7 @@ export default function PostPage() {
           url: window.location.href,
         });
       } catch (error) {
+        // Share action cancelled by user
         console.log("Share cancelled");
       }
     } else {
@@ -338,51 +365,50 @@ export default function PostPage() {
         <div className="grid grid-cols-12 gap-8">
           {/* Left Sidebar - Floating Action Buttons */}
           <aside className="col-span-1">
-            <div className="sticky top-24 space-y-4">
-              <Button
-                variant={liked ? "default" : "ghost"}
-                size="sm"
+            <div className="sticky top-24 space-y-4 flex flex-col items-center">
+              {/* Like Button */}
+              <button
                 onClick={handleLike}
-                className="w-12 h-12 rounded-full flex flex-col items-center justify-center"
+                className={`w-14 h-14 rounded-full flex flex-col items-center justify-center transition-all duration-200   border border-transparent hover:border-muted`}
+                title="Like"
               >
                 <Heart
-                  className={`h-5 w-5 ${
-                    liked ? "fill-current text-red-500" : ""
+                  className={`h-6 w-6 transition-all ${
+                    liked ? "fill-current text-red-600" : ""
                   }`}
                 />
-                <span className="text-xs mt-1">{likesCount}</span>
-              </Button>
+                <span className="text-xs mt-1 font-semibold">{likesCount}</span>
+              </button>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-12 h-12 rounded-full flex flex-col items-center justify-center"
+              {/* Comments Button */}
+              <button
                 onClick={() =>
                   document
                     .getElementById("comments")
                     ?.scrollIntoView({ behavior: "smooth" })
                 }
+                className="w-14 h-14 rounded-full flex flex-col items-center justify-center transition-all duration-200 hover:bg-muted text-muted-foreground hover:text-blue-600 border border-transparent hover:border-muted"
+                title="Comments"
               >
-                <MessageCircle className="h-5 w-5" />
-                <span className="text-xs mt-1">{comments.length}</span>
-              </Button>
+                <MessageCircle className="h-6 w-6" />
+                <span className="text-xs mt-1 font-semibold">
+                  {comments.length}
+                </span>
+              </button>
 
-              <Button
-                variant="ghost"
-                size="sm"
-                className="w-12 h-12 rounded-full flex flex-col items-center justify-center"
-              >
-                <Bookmark className="h-5 w-5" />
-              </Button>
+              {/* Bookmark Button */}
+              <div className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-muted border border-transparent hover:border-muted">
+                <BookmarkButton postId={id as string} size="sm" variant="minimal" />
+              </div>
 
-              <Button
-                variant="ghost"
-                size="sm"
+              {/* Share Button */}
+              <button
                 onClick={handleShare}
-                className="w-12 h-12 rounded-full flex flex-col items-center justify-center"
+                className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-muted text-muted-foreground hover:text-green-600 border border-transparent hover:border-muted"
+                title="Share"
               >
-                <Share2 className="h-5 w-5" />
-              </Button>
+                <Share2 className="h-6 w-6" />
+              </button>
             </div>
           </aside>
 

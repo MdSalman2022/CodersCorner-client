@@ -1,15 +1,20 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, MessageCircle, Clock, TrendingUp, Users } from "lucide-react";
+import { Heart, MessageCircle, TrendingUp, Users } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
 import { BookmarkButton } from "@/components/bookmark-button";
+
+interface Comment {
+  _id: string;
+  content: string;
+  author: string;
+}
 
 interface Post {
   _id: string;
@@ -24,7 +29,7 @@ interface Post {
   readingTime: number;
   tags: string[];
   likes: string[];
-  comments: any[];
+  comments: Comment[];
   views: number;
   coverImage?: string;
   updatedAt?: string;
@@ -41,12 +46,14 @@ export function MediumFeed() {
     if (user) {
       fetchFollowingPosts();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchDiscoverPosts = async () => {
     try {
+      // Fetch trending/recent posts from everyone
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?limit=20`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?limit=20&sort=trending`
       );
       if (response.ok) {
         const data = await response.json();
@@ -61,10 +68,20 @@ export function MediumFeed() {
 
   const fetchFollowingPosts = async () => {
     try {
-      // In a real app, this would fetch posts from followed users
-      // For now, just fetch recent posts
+      if (!user) return;
+
+      // Fetch posts only from users the current user follows
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?limit=15`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts/feed/following?limit=15`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: user.id, // Pass Better Auth ID
+          }),
+        }
       );
       if (response.ok) {
         const data = await response.json();
@@ -100,10 +117,6 @@ export function MediumFeed() {
                 {new Date(post.publishedAt).toLocaleDateString()}
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">
-              <Clock className="h-3 w-3 inline mr-1" />
-              {post.readingTime} min read
-            </p>
           </div>
         </div>
 
@@ -139,24 +152,30 @@ export function MediumFeed() {
 
         {/* Actions */}
         <div className="flex items-center justify-between text-muted-foreground pt-2 border-t border-border/50">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 px-2 hover:text-red-500 hover:bg-red-500/10 transition-colors"
+          {/* Left: Like and Comment with Links */}
+          <div className="flex items-center gap-6">
+            {/* Likes */}
+            <Link
+              href={`/posts/${post._id}`}
+              className="flex items-center gap-1.5 hover:text-red-500 transition-colors"
             >
-              <Heart className="h-4 w-4 mr-2" />
-              <span className="text-xs">{post.likes.length}</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-8 px-2 hover:text-blue-500 hover:bg-blue-500/10 transition-colors"
+              <Heart className="h-4 w-4 text-red-500" />
+              <span className="text-xs font-medium">{post.likes.length}</span>
+            </Link>
+
+            {/* Comments */}
+            <Link
+              href={`/posts/${post._id}#comments`}
+              className="flex items-center gap-1.5 hover:text-blue-500 transition-colors"
             >
-              <MessageCircle className="h-4 w-4 mr-2" />
-              <span className="text-xs">{post.comments.length}</span>
-            </Button>
+              <MessageCircle className="h-4 w-4" />
+              <span className="text-xs font-medium">
+                {post.comments.length}
+              </span>
+            </Link>
           </div>
+
+          {/* Right: Bookmark */}
           <div className="flex items-center gap-1">
             <BookmarkButton postId={post._id} size="sm" />
           </div>

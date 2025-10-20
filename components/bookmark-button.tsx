@@ -10,9 +10,14 @@ import { useBookmarks } from "@/lib/bookmark-context";
 interface BookmarkButtonProps {
   postId: string;
   size?: "sm" | "lg";
+  variant?: "default" | "minimal";
 }
 
-export function BookmarkButton({ postId, size = "sm" }: BookmarkButtonProps) {
+export function BookmarkButton({
+  postId,
+  size = "sm",
+  variant = "default",
+}: BookmarkButtonProps) {
   const { user } = useAuth();
   const { isBookmarked, addBookmark, removeBookmark } = useBookmarks();
   const [isLoading, setIsLoading] = useState(false);
@@ -85,14 +90,18 @@ export function BookmarkButton({ postId, size = "sm" }: BookmarkButtonProps) {
 
   return (
     <Button
-      variant="ghost"
+      variant={variant === "minimal" ? "ghost" : "ghost"}
       size={size}
       onClick={handleToggleBookmark}
       disabled={isLoading}
-      className={`gap-2 ${bookmarked ? "text-primary" : ""}`}
+      className={`gap-2 ${bookmarked ? "text-yellow-600" : ""} ${
+        variant === "minimal"
+          ? "p-0 h-auto w-auto bg-transparent hover:bg-transparent border-0"
+          : ""
+      }`}
     >
-      <Bookmark className={`h-4 w-4 ${bookmarked ? "fill-primary" : ""}`} />
-      {size === "lg" && (
+      <Bookmark className={`h-6 w-6 ${bookmarked ? "fill-yellow-600" : ""}`} />
+      {size === "lg" && variant !== "minimal" && (
         <span className="hidden sm:inline">
           {bookmarked ? "Bookmarked" : "Bookmark"}
         </span>

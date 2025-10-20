@@ -15,13 +15,30 @@ interface DiscussionPost {
     avatar?: string;
     userId: string;
   };
+  comments?: string[];
   commentsCount: number;
   lastActivity: string;
+  updatedAt?: string;
+  createdAt?: string;
+}
+
+interface Post {
+  _id: string;
+  title: string;
+  author: {
+    name: string;
+    avatar?: string;
+    userId: string;
+  };
+  comments?: string[];
+  tags?: string[];
+  updatedAt?: string;
+  createdAt?: string;
 }
 
 interface Topic {
   name: string;
-  followers: number;
+  count: number;
   color: string;
 }
 
@@ -51,7 +68,7 @@ export function MediumRightSidebar({
         const data = await response.json();
         // Transform to discussion format
         const discussionPosts = data.posts
-          .map((post: any) => ({
+          .map((post: Post) => ({
             _id: post._id,
             title: post.title,
             author: post.author,
@@ -71,19 +88,41 @@ export function MediumRightSidebar({
   };
 
   const fetchRecommendedTopics = async () => {
-    // Static recommended topics for now
-    const recommendedTopics: Topic[] = [
-      { name: "JavaScript", followers: 12500, color: "bg-yellow-500" },
-      { name: "React", followers: 8900, color: "bg-blue-500" },
-      { name: "Python", followers: 15600, color: "bg-green-500" },
-      { name: "TypeScript", followers: 7800, color: "bg-blue-600" },
-      { name: "Node.js", followers: 9200, color: "bg-green-600" },
-      { name: "CSS", followers: 11300, color: "bg-purple-500" },
-      { name: "AWS", followers: 6700, color: "bg-orange-500" },
-      { name: "Docker", followers: 5400, color: "bg-cyan-500" },
-    ];
-    setTopics(recommendedTopics);
-    setLoading(false);
+    try {
+      // Fetch all posts to collect tags
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?limit=100`
+      );
+      if (response.ok) {
+        const data = await response.json();
+
+        // Count tag frequency across all posts
+        const tagCount: Record<string, number> = {};
+        data.posts.forEach((post: Post) => {
+          post.tags?.forEach((tag: string) => {
+            tagCount[tag] = (tagCount[tag] || 0) + 1;
+          });
+        });
+
+        // Convert to array and sort by count (most used first)
+        const topicsList: Topic[] = Object.entries(tagCount)
+          .map(([name, count]) => ({
+            name,
+            count,
+            color: `hsl(${Math.random() * 360}, 70%, 60%)`, // Random color for each tag
+          }))
+          .sort((a, b) => b.count - a.count)
+          .slice(0, 12); // Top 12 tags
+
+        setTopics(topicsList);
+      }
+    } catch (error) {
+      console.error("Failed to fetch topics:", error);
+      // Fallback to empty array if fetch fails
+      setTopics([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -153,27 +192,38 @@ export function MediumRightSidebar({
           <CardHeader className="pb-4">
             <CardTitle className="text-lg flex items-center gap-2">
               <TrendingUp className="h-5 w-5" />
-              Recommended Topics
+              Trending Tags
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex flex-wrap gap-2">
-              {topics.map((topic) => (
-                <Link
-                  key={topic.name}
-                  href={`/topic/${encodeURIComponent(
-                    topic.name.toLowerCase()
-                  )}`}
-                >
-                  <Badge
-                    variant="secondary"
-                    className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors px-3 py-1"
+            {topics.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No tags found yet</p>
+            ) : (
+              <div className="flex flex-wrap gap-2">
+                {topics.map((topic) => (
+                  <Link
+                    key={topic.name}
+                    href={`/topic/${encodeURIComponent(
+                      topic.name.toLowerCase()
+                    )}`}
+                    className="group"
                   >
-                    {topic.name}
-                  </Badge>
-                </Link>
-              ))}
-            </div>
+                    <Badge
+                      variant="secondary"
+                      className="cursor-pointer hover:bg-primary hover:text-primary-foreground transition-colors px-3 py-1 text-xs"
+                      title={`${topic.count} post${
+                        topic.count !== 1 ? "s" : ""
+                      }`}
+                    >
+                      {topic.name}
+                      <span className="ml-1 opacity-60 group-hover:opacity-100">
+                        ({topic.count})
+                      </span>
+                    </Badge>
+                  </Link>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

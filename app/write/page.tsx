@@ -3,7 +3,6 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -22,7 +21,6 @@ import {
   Loader2,
 } from "lucide-react";
 import { TiptapEditor } from "@/components/tiptap-editor";
-import { Header } from "@/components/header";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
@@ -180,14 +178,10 @@ export default function Write() {
     setShowPreview(true);
   };
 
-  const closePreview = () => {
-    setShowPreview(false);
-  };
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header Actions */}
-      <div className="max-w-7xl mx-auto border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-16 z-40 shadow-sm">
+      <div className="max-w-7xl mx-auto border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-40 shadow-sm">
         <div className="px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
