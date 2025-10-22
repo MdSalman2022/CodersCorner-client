@@ -398,7 +398,11 @@ export default function PostPage() {
 
               {/* Bookmark Button */}
               <div className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-muted border border-transparent hover:border-muted">
-                <BookmarkButton postId={id as string} size="sm" variant="minimal" />
+                <BookmarkButton
+                  postId={id as string}
+                  size="sm"
+                  variant="minimal"
+                />
               </div>
 
               {/* Share Button */}
