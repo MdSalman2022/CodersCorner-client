@@ -23,10 +23,6 @@ import {
   PenTool,
   Bell,
   User,
-  Home,
-  BookOpen,
-  BarChart3,
-  Users,
   Settings,
   LogOut,
   ChevronDown,
@@ -35,28 +31,21 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useAuth } from "@/lib/auth-context";
-import Image from "next/image";
-import coderscornerLogo from "@/public/assets/coderscorner.png";
 
 interface MediumHeaderProps {
   onMobileMenuToggle?: () => void;
   isMobileMenuOpen?: boolean;
 }
 
-export function MediumHeader({
-  onMobileMenuToggle,
-  isMobileMenuOpen,
-}: MediumHeaderProps = {}) {
+export function MediumHeader({ onMobileMenuToggle }: MediumHeaderProps = {}) {
   const { user, signOut } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
-      setIsSearchOpen(false);
     }
   };
 
@@ -65,7 +54,7 @@ export function MediumHeader({
     setIsUserMenuOpen(false);
   };
 
-  const isAdmin = user?.role === "admin" || user?.isAdmin; // Check for admin role
+  const isAdmin = user?.roleName === "admin";
 
   const UserMenuItems = () => (
     <>
@@ -156,7 +145,7 @@ export function MediumHeader({
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setIsSearchOpen(true)}
+              onClick={() => setIsUserMenuOpen(true)}
               className="md:hidden"
             >
               <Search className="h-4 w-4" />
@@ -189,7 +178,7 @@ export function MediumHeader({
                         className="flex items-center gap-2 px-2"
                       >
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src={user.image} />
+                          <AvatarImage src={user.image ?? undefined} />
                           <AvatarFallback>
                             {user.name?.[0] || "U"}
                           </AvatarFallback>
@@ -209,7 +198,7 @@ export function MediumHeader({
                     <SheetTrigger asChild>
                       <Button variant="ghost" size="sm">
                         <Avatar className="h-8 w-8">
-                          <AvatarImage src={user.image} />
+                          <AvatarImage src={user.image ?? undefined} />
                           <AvatarFallback>
                             {user.name?.[0] || "U"}
                           </AvatarFallback>
@@ -220,7 +209,7 @@ export function MediumHeader({
                       <SheetHeader>
                         <SheetTitle className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">
-                            <AvatarImage src={user.image} />
+                            <AvatarImage src={user.image ?? undefined} />
                             <AvatarFallback>
                               {user.name?.[0] || "U"}
                             </AvatarFallback>

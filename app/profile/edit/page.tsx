@@ -11,7 +11,6 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Header } from "@/components/header";
 import {
   Loader2,
   Plus,
@@ -24,6 +23,7 @@ import {
   Linkedin,
   Twitter,
 } from "lucide-react";
+import { MediumHeader } from "@/components/medium-header";
 
 interface UserProfile {
   userId: string;
@@ -205,7 +205,7 @@ export default function ProfileEditPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <MediumHeader />
         <main className="container mx-auto px-4 py-8 max-w-4xl">
           <div className="animate-pulse space-y-6">
             <div className="h-8 bg-muted rounded w-48"></div>
@@ -219,7 +219,7 @@ export default function ProfileEditPage() {
   if (error && !profile) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
+        <MediumHeader />
         <main className="container mx-auto px-4 py-8 max-w-4xl text-center">
           <h1 className="text-2xl font-bold mb-4">Error Loading Profile</h1>
           <p className="text-muted-foreground mb-4">{error}</p>
@@ -231,7 +231,7 @@ export default function ProfileEditPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <MediumHeader />
 
       <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="space-y-6">

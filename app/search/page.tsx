@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Search, Heart, MessageCircle, Clock } from "lucide-react";
-import { Header } from "@/components/header";
 
 interface Post {
   _id: string;
@@ -82,7 +81,7 @@ export default function SearchPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <main className="max-w-7xl mx-auto px-4 py-8 max-w-4xl">
+      <main className="max-w-4xl mx-auto px-4 py-8">
         {/* Search Header */}
         <div className="space-y-8">
           <div className="text-center">

@@ -9,10 +9,7 @@ import {
   Users,
   FileText,
   Eye,
-  TrendingUp,
   Shield,
-  UserCheck,
-  UserX,
   Edit,
   Trash2,
   Search,
@@ -75,7 +72,6 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<AdminStats | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
   const [userSearch, setUserSearch] = useState("");
   const [postSearch, setPostSearch] = useState("");
   const [postStatus, setPostStatus] = useState("all");
@@ -90,6 +86,7 @@ export default function AdminDashboard() {
       fetchUsers();
       fetchPosts();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchStats = async () => {
@@ -166,8 +163,6 @@ export default function AdminDashboard() {
       }
     } catch (error) {
       console.error("Failed to fetch posts:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -397,7 +392,9 @@ export default function AdminDashboard() {
           <TabsContent value="users" className="space-y-4">
             <Card>
               <CardHeader>
-                <CardTitle>User Management</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  User Management
+                </CardTitle>
                 <div className="flex gap-4">
                   <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
