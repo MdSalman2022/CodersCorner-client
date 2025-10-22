@@ -35,18 +35,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = useSession();
   const [user, setUser] = useState(session?.user || null);
 
-  // Auto-refresh session every 30 minutes to prevent expiration
   useEffect(() => {
     if (session?.user) {
       const refreshInterval = setInterval(async () => {
         try {
-          // Refresh by getting new session
           await authClient.getSession();
           console.log("🔄 Session refreshed automatically");
         } catch (error) {
           console.error("Failed to refresh session:", error);
         }
-      }, 30 * 60 * 1000); // 30 minutes
+      }, 30 * 60 * 1000);
 
       return () => clearInterval(refreshInterval);
     }
@@ -67,10 +65,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       localStorage.removeItem("user");
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session, isPending]);
 
-  // Fetch complete user data from our API (includes role info)
   const fetchUserData = async (sessionUser: User) => {
     try {
       const response = await fetch(
@@ -94,12 +90,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         console.log("Auth Context - User Data:", userData);
         console.log("Auth Context - Role Name:", userData.roleName);
 
-        // Ensure roleName is set
         if (!userData.roleName && userData.role) {
           userData.roleName = userData.role.name;
         }
 
-        // CRITICAL: Ensure user.id is always the betterAuthId
         if (!userData.id) {
           userData.id = userData.betterAuthId || sessionUser.id;
           console.log("⚠️ Fixed missing user.id:", userData.id);
@@ -108,12 +102,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(userData);
         localStorage.setItem("user", JSON.stringify(userData));
       } else if (response.status === 404) {
-        // User profile doesn't exist, need to sync
         const errorData = await response.json();
         if (errorData.needsSync) {
           console.log("🔄 User profile not found, syncing...");
 
-          // Call sync-profile to create the profile
           try {
             const syncResponse = await fetch(
               `${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/sync-profile`,
@@ -133,7 +125,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             if (syncResponse.ok) {
               console.log("✅ User profile synced, fetching data again...");
-              // Retry fetching user data
+
               await fetchUserData(sessionUser);
               return;
             } else {
@@ -147,7 +139,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         }
 
-        // If sync failed, clear session
         console.log("❌ Could not sync user profile, signing out");
         await signOut();
       } else {
@@ -156,7 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           response.status,
           response.statusText
         );
-        // If API fails, fall back to session user but don't set as logged in
+
         if (response.status === 401) {
           console.log("🔄 Session expired, clearing session");
           await signOut();
@@ -164,12 +155,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (error) {
       console.error("Failed to fetch user data:", error);
-      // If network error, keep session user as fallback but mark as loading
+
       setUser(sessionUser as unknown as typeof user);
     }
   };
 
-  // Periodic session validation
   useEffect(() => {
     if (user) {
       const validateSession = async () => {
@@ -184,14 +174,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       };
 
-      // Check session validity every 5 minutes
       const sessionCheck = setInterval(validateSession, 5 * 60 * 1000);
 
       return () => clearInterval(sessionCheck);
     }
   }, [user]);
 
-  // Helper function to sync user profile with backend
   const syncUserProfile = async (
     userId: string,
     email: string,
@@ -240,15 +228,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       console.log("✅ Auth Context: Signup successful");
 
-      // Wait for session to be established
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      // Get the session to get userId
       const session = await authClient.getSession();
       console.log("🔄 Auth Context: Got session:", session);
 
       if (session?.data?.user?.id) {
-        // Sync profile with backend
         await syncUserProfile(
           session.data.user.id,
           session.data.user.email,
@@ -257,7 +242,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         );
       }
 
-      // Redirect to home page after successful signup
       window.location.href =
         process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000";
     } catch (error) {
@@ -274,7 +258,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password,
       });
       console.log("✅ Auth Context: Login successful");
-      // Redirect to home page after successful login
+
       window.location.href =
         process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000";
     } catch (error) {
@@ -287,7 +271,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       console.log("🔄 Auth Context: Calling Google sign-in...");
 
-      // Initiate Google sign-in
       await authClient.signIn.social({
         provider: "google",
         callbackURL:
@@ -295,7 +278,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       });
 
       console.log("✅ Auth Context: Google sign-in completed, redirecting...");
-      // Better Auth handles the redirect automatically
     } catch (error) {
       console.error("❌ Auth Context: Google sign-in error:", error);
       throw error;
@@ -323,7 +305,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("✅ Auth Context: Sign out successful");
       setUser(null);
       localStorage.removeItem("user");
-      // Redirect to home page after sign out
+
       window.location.href =
         process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000";
     } catch (error) {

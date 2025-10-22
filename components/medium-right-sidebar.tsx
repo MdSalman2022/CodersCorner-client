@@ -60,13 +60,11 @@ export function MediumRightSidebar({
 
   const fetchActiveDiscussions = async () => {
     try {
-      // Get posts with most comments, sorted by recent activity
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?limit=5&sort=comments`
       );
       if (response.ok) {
         const data = await response.json();
-        // Transform to discussion format
         const discussionPosts = data.posts
           .map((post: Post) => ({
             _id: post._id,
@@ -89,14 +87,12 @@ export function MediumRightSidebar({
 
   const fetchRecommendedTopics = async () => {
     try {
-      // Fetch all posts to collect tags
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?limit=100`
       );
       if (response.ok) {
         const data = await response.json();
 
-        // Count tag frequency across all posts
         const tagCount: Record<string, number> = {};
         data.posts.forEach((post: Post) => {
           post.tags?.forEach((tag: string) => {
@@ -104,21 +100,19 @@ export function MediumRightSidebar({
           });
         });
 
-        // Convert to array and sort by count (most used first)
         const topicsList: Topic[] = Object.entries(tagCount)
           .map(([name, count]) => ({
             name,
             count,
-            color: `hsl(${Math.random() * 360}, 70%, 60%)`, // Random color for each tag
+            color: `hsl(${Math.random() * 360}, 70%, 60%)`,
           }))
           .sort((a, b) => b.count - a.count)
-          .slice(0, 12); // Top 12 tags
+          .slice(0, 12);
 
         setTopics(topicsList);
       }
     } catch (error) {
       console.error("Failed to fetch topics:", error);
-      // Fallback to empty array if fetch fails
       setTopics([]);
     } finally {
       setLoading(false);

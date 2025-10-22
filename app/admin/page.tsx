@@ -58,7 +58,7 @@ interface Post {
   title: string;
   excerpt: string;
   status: string;
-  isFeatured: boolean; // Add isFeatured property
+  isFeatured: boolean;
   author: {
     name: string;
     email: string;
@@ -86,7 +86,6 @@ export default function AdminDashboard() {
       fetchUsers();
       fetchPosts();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchStats = async () => {

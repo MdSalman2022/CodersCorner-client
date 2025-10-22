@@ -57,7 +57,6 @@ export default function TopicPage() {
   const fetchTopicData = async () => {
     try {
       setLoading(true);
-      // For now, simulate topic data
       const mockTopicData: TopicData = {
         name: decodeURIComponent(topic as string),
         followers: Math.floor(Math.random() * 10000) + 1000,
@@ -65,10 +64,9 @@ export default function TopicPage() {
           topic as string
         )}. Discover the latest trends, tutorials, and insights from the developer community.`,
         isFollowing: Math.random() > 0.5,
-        posts: [], // Will be populated from API
+        posts: [],
       };
 
-      // Fetch posts with this topic/tag
       const response = await fetch(
         `${
           process.env.NEXT_PUBLIC_SERVER_URL
@@ -90,7 +88,6 @@ export default function TopicPage() {
   const handleFollow = async () => {
     if (!topicData) return;
 
-    // In a real app, this would make an API call
     setTopicData({
       ...topicData,
       isFollowing: !topicData.isFollowing,

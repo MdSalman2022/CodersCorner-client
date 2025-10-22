@@ -12,14 +12,12 @@ export function useUserProfileSync() {
 
   const syncUserProfile = async (user: any) => {
     try {
-      // Check if user profile exists in our userinfo collection
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user.id}`
       );
       const profileExists = response.ok;
 
       if (!profileExists) {
-        // Create user profile in userinfo collection
         const createResponse = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users`,
           {

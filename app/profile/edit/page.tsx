@@ -57,7 +57,6 @@ export default function ProfileEditPage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Form state
   const [formData, setFormData] = useState({
     name: "",
     bio: "",

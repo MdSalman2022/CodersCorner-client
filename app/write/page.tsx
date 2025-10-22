@@ -47,7 +47,6 @@ export default function Write() {
 
     const file = files[0];
     if (file.size > 5 * 1024 * 1024) {
-      // 5MB limit
       toast.error("Image size must be less than 5MB");
       return;
     }

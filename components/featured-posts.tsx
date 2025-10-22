@@ -28,7 +28,7 @@ interface Post {
   likes: string[];
   comments: string[];
   views: number;
-  isFeatured: boolean; // Add isFeatured property
+  isFeatured: boolean;
 }
 
 export function FeaturedPosts() {
@@ -72,7 +72,6 @@ export function FeaturedPosts() {
     );
   }
 
-  // If no featured posts, show fallback content
   if (featuredPosts.length === 0) {
     return (
       <section className="py-20 px-4 bg-muted/30">

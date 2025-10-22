@@ -20,7 +20,6 @@ export const FeedComponent: React.FC<FeedComponentProps> = ({
   const { posts, isLoading, error, fetchFeed, isRealTimeEnabled } = useFeed();
   const { user } = useAuth();
 
-  // Load feed on mount and when feedType changes
   useEffect(() => {
     if (feedType === "home" && user?.id) {
       fetchFeed(feedType, user.id);
@@ -29,7 +28,6 @@ export const FeedComponent: React.FC<FeedComponentProps> = ({
     }
   }, [feedType, user?.id, fetchFeed]);
 
-  // Show loading state
   if (isLoading) {
     return (
       <div className={cn("space-y-6", className)}>
@@ -43,7 +41,6 @@ export const FeedComponent: React.FC<FeedComponentProps> = ({
     );
   }
 
-  // Show error state
   if (error) {
     return (
       <div
@@ -57,7 +54,6 @@ export const FeedComponent: React.FC<FeedComponentProps> = ({
     );
   }
 
-  // Show empty state
   if (posts.length === 0) {
     return (
       <div

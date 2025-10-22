@@ -21,7 +21,6 @@ export const useSocket = () => {
   const socketRef = useRef<Socket | null>(null);
   const { user } = useAuth();
 
-  // Initialize socket connection
   const connect = useCallback(() => {
     if (!user?.id) return;
     if (socketRef.current?.connected) return;
@@ -35,20 +34,15 @@ export const useSocket = () => {
         transports: ["websocket", "polling"],
       });
 
-      // Log connection
       socketRef.current.on("connect", () => {
         console.log("✅ Socket connected:", socketRef.current?.id);
 
-        // Join user-specific room
         socketRef.current?.emit("join_user_room", { userId: user.id });
       });
-
-      // Log disconnection
       socketRef.current.on("disconnect", () => {
         console.log("❌ Socket disconnected");
       });
 
-      // Error handling
       socketRef.current.on("error", (error: unknown) => {
         console.error("❌ Socket error:", error);
       });
@@ -61,7 +55,6 @@ export const useSocket = () => {
     }
   }, [user?.id]);
 
-  // Disconnect socket
   const disconnect = useCallback(() => {
     if (socketRef.current) {
       socketRef.current.disconnect();
@@ -69,7 +62,6 @@ export const useSocket = () => {
     }
   }, []);
 
-  // Subscribe to feed
   const subscribeFeed = useCallback(
     (feedType: "home" | "trending" | "latest" | "popular" = "home") => {
       if (!socketRef.current?.connected) {
@@ -83,7 +75,6 @@ export const useSocket = () => {
     []
   );
 
-  // Unsubscribe from feed
   const unsubscribeFeed = useCallback(
     (feedType: "home" | "trending" | "latest" | "popular" = "home") => {
       if (!socketRef.current?.connected) return;
@@ -94,7 +85,6 @@ export const useSocket = () => {
     []
   );
 
-  // Listen to feed updates
   const onFeedUpdate = useCallback((callback: (update: FeedUpdate) => void) => {
     if (!socketRef.current) return;
 
@@ -108,7 +98,6 @@ export const useSocket = () => {
     };
   }, []);
 
-  // Listen to notifications
   const onNotification = useCallback(
     (callback: (notification: Notification) => void) => {
       if (!socketRef.current) return;
@@ -125,14 +114,10 @@ export const useSocket = () => {
     []
   );
 
-  // Initialize connection on mount
   useEffect(() => {
     connect();
 
-    return () => {
-      // Don't disconnect on unmount to keep connection alive
-      // disconnect();
-    };
+    return () => {};
   }, [connect]);
 
   return {

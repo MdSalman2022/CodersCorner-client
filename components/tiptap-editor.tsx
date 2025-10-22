@@ -110,7 +110,6 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (file) {
-        // Validate file size (5MB limit)
         if (file.size > 5 * 1024 * 1024) {
           toast.error("Image size must be less than 5MB");
           return;
@@ -119,7 +118,6 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
         setIsUploadingImage(true);
         setUploadProgress(0);
 
-        // Simulate upload progress
         const progressInterval = setInterval(() => {
           setUploadProgress((prev) => {
             if (prev >= 90) {
@@ -133,7 +131,6 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
         toast.loading("Uploading image...", { id: "image-upload" });
 
         try {
-          // Upload to backend API
           const formData = new FormData();
           formData.append("image", file);
 
@@ -150,7 +147,6 @@ export function TiptapEditor({ content, onChange }: TiptapEditorProps) {
 
           if (response.ok) {
             const data = await response.json();
-            // Insert the uploaded image into the editor
             editor.chain().focus().setImage({ src: data.image.url }).run();
             toast.success("Image uploaded successfully!", {
               id: "image-upload",

@@ -66,7 +66,6 @@ export const FeedProvider: React.FC<{ children: React.ReactNode }> = ({
   const { isConnected, subscribeFeed, onFeedUpdate, onNotification } =
     useSocket();
 
-  // Fetch feed from API
   const fetchFeed = useCallback(
     async (
       type: "home" | "discover" | "trending" | "latest" | "popular",
@@ -94,7 +93,6 @@ export const FeedProvider: React.FC<{ children: React.ReactNode }> = ({
         setPosts(data.feeds || data.posts || []);
         setCurrentFeedType(type);
 
-        // Enable real-time updates
         if (
           isConnected &&
           (type === "home" ||
@@ -117,16 +115,13 @@ export const FeedProvider: React.FC<{ children: React.ReactNode }> = ({
     [isConnected, subscribeFeed]
   );
 
-  // Listen to real-time feed updates
   useEffect(() => {
     if (!isConnected) return;
 
     const unsubscribe = onFeedUpdate((update: FeedUpdate) => {
       if (update.type === "new_post") {
-        // Add new post to the beginning
         setPosts((prev) => [update.data.data as Post, ...prev]);
       } else if (update.type === "post_updated") {
-        // Update existing post
         setPosts((prev) =>
           prev.map((post) =>
             post._id === (update.data.postId as string)
@@ -135,7 +130,6 @@ export const FeedProvider: React.FC<{ children: React.ReactNode }> = ({
           )
         );
       } else if (update.type === "post_deleted") {
-        // Remove deleted post
         setPosts((prev) =>
           prev.filter((post) => post._id !== (update.data.postId as string))
         );
@@ -145,29 +139,24 @@ export const FeedProvider: React.FC<{ children: React.ReactNode }> = ({
     return unsubscribe;
   }, [isConnected, onFeedUpdate]);
 
-  // Listen to notifications (optional)
   useEffect(() => {
     if (!isConnected) return;
 
     const unsubscribe = onNotification((notification) => {
       console.log("Notification:", notification);
-      // Handle notifications (e.g., show toast)
     });
 
     return unsubscribe;
   }, [isConnected, onNotification]);
 
-  // Manually add post to feed
   const addPost = useCallback((post: Post) => {
     setPosts((prev) => [post, ...prev]);
   }, []);
 
-  // Remove post from feed
   const removePost = useCallback((postId: string) => {
     setPosts((prev) => prev.filter((post) => post._id !== postId));
   }, []);
 
-  // Update post in feed
   const updatePost = useCallback((postId: string, updates: Partial<Post>) => {
     setPosts((prev) =>
       prev.map((post) => (post._id === postId ? { ...post, ...updates } : post))

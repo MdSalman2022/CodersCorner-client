@@ -59,7 +59,6 @@ export default function StatsPage() {
     try {
       setLoading(true);
 
-      // Fetch user overall stats
       const userStatsResponse = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/user/${user?.id}`,
         {
@@ -75,7 +74,6 @@ export default function StatsPage() {
         setUserStats(userData.stats);
       }
 
-      // Fetch post-specific stats
       const postStatsResponse = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/posts?userId=${user?.id}&timeRange=${timeRange}`,
         {

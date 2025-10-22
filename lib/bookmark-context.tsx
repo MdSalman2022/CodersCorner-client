@@ -21,7 +21,6 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
   );
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch all bookmarks once when user logs in
   useEffect(() => {
     if (user) {
       fetchAllBookmarks();
@@ -47,7 +46,6 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
 
       if (response.ok) {
         const data = await response.json();
-        // Convert array of post IDs to Set for O(1) lookup
         setBookmarkedPostIds(new Set(data.postIds || []));
         console.log("✅ Loaded bookmarks:", data.postIds?.length || 0);
       }

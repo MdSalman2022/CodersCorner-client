@@ -32,7 +32,6 @@ export function BookmarkButton({
 
     setIsLoading(true);
 
-    // Optimistic update - update UI immediately
     const wasBookmarked = bookmarked;
     if (wasBookmarked) {
       removeBookmark(postId);
@@ -66,7 +65,6 @@ export function BookmarkButton({
           wasBookmarked ? "Bookmark removed" : "Post bookmarked successfully"
         );
       } else {
-        // Revert optimistic update on failure
         if (wasBookmarked) {
           addBookmark(postId);
         } else {
@@ -75,7 +73,6 @@ export function BookmarkButton({
         toast.error("Failed to update bookmark");
       }
     } catch (error) {
-      // Revert optimistic update on error
       if (wasBookmarked) {
         addBookmark(postId);
       } else {

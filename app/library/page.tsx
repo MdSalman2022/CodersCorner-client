@@ -155,9 +155,7 @@ export default function LibraryPage() {
       );
 
       if (response.ok) {
-        // Update context
         removeBookmark(postId);
-        // Update local state
         setBookmarkedPosts(bookmarkedPosts.filter((p) => p._id !== postId));
         toast.success("Bookmark removed");
       } else {

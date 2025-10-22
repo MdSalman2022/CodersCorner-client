@@ -90,7 +90,6 @@ export default function PostPage() {
     if (id) {
       fetchPost();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   useEffect(() => {
@@ -101,13 +100,10 @@ export default function PostPage() {
         checkFollowStatus();
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [post, user]);
 
   useEffect(() => {
     if (post && user) {
-      // Check if current user's MongoDB _id is in likes array
-      // The likes array should contain user MongoDB ObjectIds
       setLiked(post.likes.includes(user._id || user.id));
       setLikesCount(post.likes.length);
     }
@@ -116,7 +112,6 @@ export default function PostPage() {
   const fetchPost = async () => {
     try {
       setLoading(true);
-      // Add trackView=true only on initial load, not on refetch
       const trackView = !post ? "true" : "false";
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts/${id}?trackView=${trackView}`
@@ -128,7 +123,6 @@ export default function PostPage() {
         setError("Post not found");
       }
     } catch (err) {
-      // Handle fetch error
       setError("Failed to load post");
     } finally {
       setLoading(false);
@@ -159,7 +153,6 @@ export default function PostPage() {
       );
       if (response.ok) {
         const data = await response.json();
-        // Filter out current post and take first 4
         console.log("author Posts", data);
         const otherPosts = data.posts
           .filter((p: Post) => p._id !== post._id)
@@ -179,7 +172,6 @@ export default function PostPage() {
       );
       if (response.ok) {
         const authorData = await response.json();
-        // Check if current user's MongoDB _id is in followers array
         const isFollowingThisUser = authorData.followers?.includes(user._id);
         setIsFollowing(isFollowingThisUser || false);
       }
@@ -248,14 +240,13 @@ export default function PostPage() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId: user.id }), // Send Better Auth ID
+          body: JSON.stringify({ userId: user.id }),
         }
       );
 
       if (response.ok) {
         const data = await response.json();
 
-        // Update post with new likes array and toggle liked state
         if (post) {
           setPost({
             ...post,
@@ -279,7 +270,6 @@ export default function PostPage() {
     if (!user || !post) return;
 
     try {
-      // Use DELETE method for unfollow, POST for follow
       const method = isFollowing ? "DELETE" : "POST";
 
       const response = await fetch(
@@ -294,7 +284,6 @@ export default function PostPage() {
       );
 
       if (response.ok) {
-        // Refetch follow status to get updated followers array
         await checkFollowStatus();
       } else {
         const error = await response.json();
@@ -317,11 +306,9 @@ export default function PostPage() {
           url: window.location.href,
         });
       } catch (error) {
-        // Share action cancelled by user
         console.log("Share cancelled");
       }
     } else {
-      // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href);
       alert("Link copied to clipboard!");
     }

@@ -42,10 +42,8 @@ export function MediumSidebar({
       setLoading(true);
       fetchFollowing();
     } else {
-      // No user logged in, don't load following
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchFollowing = async () => {
@@ -192,7 +190,6 @@ export function MediumSidebar({
             </div>
           </div>
         ) : (
-          // Not logged in
           <div className="pt-6 mt-4 border-t">
             <div className="flex items-center gap-2 px-3 mb-4">
               <div className="p-2 rounded-lg bg-primary/10">

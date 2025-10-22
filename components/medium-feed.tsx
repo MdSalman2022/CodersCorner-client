@@ -46,12 +46,10 @@ export function MediumFeed() {
     if (user) {
       fetchFollowingPosts();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchDiscoverPosts = async () => {
     try {
-      // Fetch trending/recent posts from everyone
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts?limit=20&sort=trending`
       );
@@ -70,7 +68,6 @@ export function MediumFeed() {
     try {
       if (!user) return;
 
-      // Fetch posts only from users the current user follows
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts/feed/following?limit=15`,
         {
@@ -79,7 +76,7 @@ export function MediumFeed() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId: user.id, // Pass Better Auth ID
+            userId: user.id,
           }),
         }
       );
