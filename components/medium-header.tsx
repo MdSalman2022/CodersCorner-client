@@ -64,12 +64,12 @@ export function MediumHeader({ onMobileMenuToggle }: MediumHeaderProps = {}) {
           Profile
         </Link>
       </DropdownMenuItem>
-      <DropdownMenuItem asChild>
+      {/* <DropdownMenuItem asChild>
         <Link href="/settings" className="flex items-center gap-2">
           <Settings className="h-4 w-4" />
           Settings
         </Link>
-      </DropdownMenuItem>
+      </DropdownMenuItem> */}
       {isAdmin && (
         <DropdownMenuItem asChild>
           <Link href="/admin" className="flex items-center gap-2">
@@ -157,7 +157,7 @@ export function MediumHeader({ onMobileMenuToggle }: MediumHeaderProps = {}) {
               asChild
               className="hidden sm:flex"
             >
-              <Link href="/write">
+              <Link href="/write" prefetch={true}>
                 <PenTool className="h-4 w-4 mr-2" />
                 Write
               </Link>
@@ -234,7 +234,7 @@ export function MediumHeader({ onMobileMenuToggle }: MediumHeaderProps = {}) {
                             Profile
                           </Link>
                         </Button>
-                        <Button
+                        {/* <Button
                           variant="ghost"
                           className="w-full justify-start gap-2"
                           asChild
@@ -244,7 +244,7 @@ export function MediumHeader({ onMobileMenuToggle }: MediumHeaderProps = {}) {
                             <Settings className="h-4 w-4" />
                             Settings
                           </Link>
-                        </Button>
+                        </Button> */}
                         {isAdmin && (
                           <Button
                             variant="ghost"
@@ -273,7 +273,7 @@ export function MediumHeader({ onMobileMenuToggle }: MediumHeaderProps = {}) {
               </>
             ) : (
               <Button variant="ghost" size="sm" asChild>
-                <Link href="/auth/login">
+                <Link href="/auth/login" prefetch={true}>
                   <span>Login</span>
                 </Link>
               </Button>
