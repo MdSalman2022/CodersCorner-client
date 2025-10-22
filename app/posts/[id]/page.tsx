@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { BookmarkButton } from "@/components/bookmark-button";
+import { toast } from "sonner";
 
 interface Post {
   _id: string;
@@ -85,6 +86,7 @@ export default function PostPage() {
   const [likesCount, setLikesCount] = useState(0);
   const [isFollowing, setIsFollowing] = useState(false);
   const [notifyComments, setNotifyComments] = useState(false);
+  const Router = useRouter();
 
   useEffect(() => {
     if (id) {
@@ -104,8 +106,10 @@ export default function PostPage() {
 
   useEffect(() => {
     if (post && user) {
-      setLiked(post?.likes?.includes(user?._id || user.id));
-      setLikesCount(post?.likes?.length || 0);
+      // Ensure likes is an array before calling includes
+      const likesArray = Array.isArray(post.likes) ? post.likes : [];
+      setLiked(likesArray.includes(user?._id || user.id));
+      setLikesCount(likesArray.length || 0);
     }
   }, [post, user]);
 
@@ -228,11 +232,20 @@ export default function PostPage() {
 
   const handleLike = async () => {
     if (!user) {
-      alert("Please sign in to like posts");
+      Router.push("/auth/login");
       return;
     }
 
     try {
+      // Optimistically update UI first
+      const userIdToCheck = user._id || user.id || user.betterAuthId;
+      const currentlyLiked = liked;
+      const currentCount = likesCount;
+
+      // Optimistic update
+      setLiked(!currentlyLiked);
+      setLikesCount(currentlyLiked ? currentCount - 1 : currentCount + 1);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts/${id}/like`,
         {
@@ -248,20 +261,36 @@ export default function PostPage() {
         const data = await response.json();
 
         if (post) {
+          const updatedLikes = data.likes || post.likes;
+          const isNowLiked = Array.isArray(updatedLikes)
+            ? updatedLikes.includes(userIdToCheck)
+            : false;
+
+          // Update with server data
           setPost({
             ...post,
-            likes: data.likes || post.likes,
+            likes: updatedLikes,
           });
-          setLikesCount(
-            data.likesCount || data.likes?.length || post.likes.length
-          );
-          setLiked(!liked);
+
+          setLikesCount(Array.isArray(updatedLikes) ? updatedLikes.length : 0);
+          setLiked(isNowLiked);
+
+          console.log("✅ Like updated:", {
+            isLiked: isNowLiked,
+            count: Array.isArray(updatedLikes) ? updatedLikes.length : 0,
+          });
         }
       } else {
+        // Revert on error
+        setLiked(currentlyLiked);
+        setLikesCount(currentCount);
         const error = await response.json();
         alert(`Failed to like post: ${error.message}`);
       }
     } catch (error) {
+      // Revert on error
+      setLiked(!liked);
+      setLikesCount(likesCount - (liked ? 1 : -1));
       console.error("Like error:", error);
       alert("Failed to like post");
     }
@@ -410,7 +439,7 @@ export default function PostPage() {
             <h1 className="block md:hidden text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
               {post.title}
             </h1>
-            <div className="flex items-center gap-4 text-center space-y-4">
+            <div className="flex md:hidden items-center gap-4 text-center space-y-4">
               {/* Compact Avatar */}
               <div className="relative">
                 <Avatar className="h-16 w-16 ring-2 ring-primary/10">

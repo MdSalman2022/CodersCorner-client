@@ -107,8 +107,8 @@ export function MediumFeed() {
               </AvatarFallback>
             </Avatar>
           </Link>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex min-w-0">
+            <div className="flex flex-col items-start gap-2 flex-wrap">
               <Link
                 href={`/profile/${post.author.userId}`}
                 className="font-semibold hover:underline"
@@ -116,7 +116,11 @@ export function MediumFeed() {
                 {post.author.name}
               </Link>
               <span className="text-sm text-muted-foreground">
-                {new Date(post.publishedAt).toLocaleDateString()}
+                {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
               </span>
             </div>
           </div>
@@ -159,7 +163,7 @@ export function MediumFeed() {
             {/* Likes */}
             <Link
               href={`/posts/${post._id}`}
-              className="flex items-center gap-1.5 hover:text-red-500 transition-colors"
+              className="flex items-center gap-1.5 "
             >
               <Heart className="h-4 w-4 text-red-500" />
               <span className="text-xs font-medium">{post.likes.length}</span>
