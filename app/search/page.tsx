@@ -2,6 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -36,18 +37,37 @@ interface Post {
 }
 
 function SearchPageContent() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const [query, setQuery] = useState(initialQuery);
   const [results, setResults] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [trendingTags, setTrendingTags] = useState<string[]>([]);
 
   useEffect(() => {
     if (initialQuery) {
       handleSearch(initialQuery);
     }
+    // Fetch trending tags on component mount
+    fetchTrendingTags();
   }, [initialQuery]);
+
+  const fetchTrendingTags = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts/trending-tags`
+      );
+      if (response.ok) {
+        const tags = await response.json();
+        // Get top 5 tags
+        setTrendingTags(tags.slice(0, 5));
+      }
+    } catch (error) {
+      console.error("Failed to fetch trending tags:", error);
+    }
+  };
 
   const handleSearch = async (searchQuery: string = query) => {
     if (!searchQuery.trim()) return;
@@ -72,6 +92,11 @@ function SearchPageContent() {
       setLoading(false);
       setSearched(true);
     }
+  };
+
+  const handleTagClick = (tag: string) => {
+    // Navigate to topic page with the tag (uses medium right sidebar UI)
+    router.push(`/topic/${encodeURIComponent(tag)}`);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -263,129 +288,31 @@ function SearchPageContent() {
             <div className="space-y-8">
               <div className="text-center">
                 <h2 className="text-3xl font-bold mb-3">
-                  Explore Popular Topics
+                  Explore Trending Topics
                 </h2>
                 <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                  Discover trending technologies and frameworks that developers
-                  are talking about
+                  Discover what developers are talking about this week
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                {[
-                  {
-                    name: "JavaScript",
-                    color:
-                      "bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20",
-                  },
-                  {
-                    name: "React",
-                    color: "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20",
-                  },
-                  {
-                    name: "Next.js",
-                    color: "bg-gray-500/10 text-gray-600 hover:bg-gray-500/20",
-                  },
-                  {
-                    name: "TypeScript",
-                    color: "bg-blue-600/10 text-blue-700 hover:bg-blue-600/20",
-                  },
-                  {
-                    name: "Python",
-                    color:
-                      "bg-green-500/10 text-green-600 hover:bg-green-500/20",
-                  },
-                  {
-                    name: "Node.js",
-                    color:
-                      "bg-green-600/10 text-green-700 hover:bg-green-600/20",
-                  },
-                  {
-                    name: "CSS",
-                    color:
-                      "bg-purple-500/10 text-purple-600 hover:bg-purple-500/20",
-                  },
-                  {
-                    name: "HTML",
-                    color:
-                      "bg-orange-500/10 text-orange-600 hover:bg-orange-500/20",
-                  },
-                  {
-                    name: "Git",
-                    color: "bg-red-500/10 text-red-600 hover:bg-red-500/20",
-                  },
-                  {
-                    name: "Docker",
-                    color: "bg-cyan-500/10 text-cyan-600 hover:bg-cyan-500/20",
-                  },
-                  {
-                    name: "AWS",
-                    color:
-                      "bg-orange-600/10 text-orange-700 hover:bg-orange-600/20",
-                  },
-                  {
-                    name: "MongoDB",
-                    color:
-                      "bg-green-600/10 text-green-700 hover:bg-green-600/20",
-                  },
-                  {
-                    name: "PostgreSQL",
-                    color: "bg-blue-700/10 text-blue-800 hover:bg-blue-700/20",
-                  },
-                  {
-                    name: "GraphQL",
-                    color: "bg-pink-500/10 text-pink-600 hover:bg-pink-500/20",
-                  },
-                  {
-                    name: "REST API",
-                    color:
-                      "bg-indigo-500/10 text-indigo-600 hover:bg-indigo-500/20",
-                  },
-                ].map((topic) => (
-                  <Button
-                    key={topic.name}
-                    variant="outline"
-                    onClick={() => {
-                      setQuery(topic.name);
-                      handleSearch(topic.name);
-                    }}
-                    className={`h-auto p-4 rounded-xl border-2 hover:border-primary transition-all duration-200 ${topic.color} hover:shadow-lg`}
-                  >
-                    <div className="text-center">
-                      <div className="font-semibold text-sm">{topic.name}</div>
-                    </div>
-                  </Button>
-                ))}
-              </div>
-
-              {/* Trending Searches */}
-              <div className="bg-muted/50 rounded-2xl p-8 text-center">
-                <h3 className="text-xl font-semibold mb-4">
-                  Trending This Week
-                </h3>
+              {trendingTags.length > 0 ? (
                 <div className="flex flex-wrap gap-3 justify-center">
-                  {[
-                    "AI in Web Development",
-                    "Modern React Patterns",
-                    "TypeScript Best Practices",
-                    "Serverless Architecture",
-                    "DevOps for Startups",
-                  ].map((trend) => (
-                    <Button
-                      key={trend}
+                  {trendingTags.map((tag) => (
+                    <Badge
+                      key={tag}
                       variant="secondary"
-                      size="sm"
-                      onClick={() => {
-                        setQuery(trend);
-                        handleSearch(trend);
-                      }}
-                      className="rounded-full hover:bg-primary hover:text-primary-foreground transition-colors"
+                      className="px-4 py-2 text-sm cursor-pointer hover:bg-primary hover:text-primary-foreground transition-all duration-200 transform hover:scale-105"
+                      onClick={() => handleTagClick(tag)}
                     >
-                      {trend}
-                    </Button>
+                      {tag.charAt(0).toUpperCase() + tag.slice(1)}
+                    </Badge>
                   ))}
                 </div>
-              </div>
+              ) : (
+                <p className="text-center text-muted-foreground">
+                  Loading trending topics...
+                </p>
+              )}
             </div>
           )}
         </div>

@@ -68,6 +68,8 @@ export function MediumFeed() {
     try {
       if (!user) return;
 
+      console.log("🔄 Fetching following posts for user:", user.id);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/posts/feed/following?limit=15`,
         {
@@ -76,13 +78,16 @@ export function MediumFeed() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            userId: user.id,
+            userId: user.id || user.betterAuthId,
           }),
         }
       );
       if (response.ok) {
         const data = await response.json();
+        console.log("✅ Following posts fetched:", data.posts.length);
         setFollowingPosts(data.posts);
+      } else {
+        console.error("Failed to fetch following posts:", response.status);
       }
     } catch (error) {
       console.error("Failed to fetch following posts:", error);

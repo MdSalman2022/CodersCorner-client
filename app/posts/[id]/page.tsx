@@ -104,8 +104,8 @@ export default function PostPage() {
 
   useEffect(() => {
     if (post && user) {
-      setLiked(post.likes.includes(user._id || user.id));
-      setLikesCount(post.likes.length);
+      setLiked(post?.likes?.includes(user?._id || user.id));
+      setLikesCount(post?.likes?.length || 0);
     }
   }, [post, user]);
 
@@ -348,19 +348,19 @@ export default function PostPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Main Content Layout */}
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-12 gap-8">
-          {/* Left Sidebar - Floating Action Buttons */}
-          <aside className="col-span-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8">
+          {/* Left Sidebar - Hidden on mobile, shown as fixed on desktop */}
+          <aside className="hidden lg:block lg:col-span-1">
             <div className="sticky top-24 space-y-4 flex flex-col items-center">
               {/* Like Button */}
               <button
                 onClick={handleLike}
-                className={`w-14 h-14 rounded-full flex flex-col items-center justify-center transition-all duration-200   border border-transparent hover:border-muted`}
+                className={`w-12 h-12 lg:w-14 lg:h-14 rounded-full flex flex-col items-center justify-center transition-all duration-200 border border-transparent hover:border-muted`}
                 title="Like"
               >
                 <Heart
-                  className={`h-6 w-6 transition-all ${
+                  className={`h-5 w-5 lg:h-6 lg:w-6 transition-all ${
                     liked ? "fill-current text-red-600" : ""
                   }`}
                 />
@@ -374,17 +374,17 @@ export default function PostPage() {
                     .getElementById("comments")
                     ?.scrollIntoView({ behavior: "smooth" })
                 }
-                className="w-14 h-14 rounded-full flex flex-col items-center justify-center transition-all duration-200 hover:bg-muted text-muted-foreground hover:text-blue-600 border border-transparent hover:border-muted"
+                className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex flex-col items-center justify-center transition-all duration-200 hover:bg-muted text-muted-foreground hover:text-blue-600 border border-transparent hover:border-muted"
                 title="Comments"
               >
-                <MessageCircle className="h-6 w-6" />
+                <MessageCircle className="h-5 w-5 lg:h-6 lg:w-6" />
                 <span className="text-xs mt-1 font-semibold">
                   {comments.length}
                 </span>
               </button>
 
               {/* Bookmark Button */}
-              <div className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-muted border border-transparent hover:border-muted">
+              <div className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-muted border border-transparent hover:border-muted">
                 <BookmarkButton
                   postId={id as string}
                   size="sm"
@@ -395,16 +395,88 @@ export default function PostPage() {
               {/* Share Button */}
               <button
                 onClick={handleShare}
-                className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-muted text-muted-foreground hover:text-green-600 border border-transparent hover:border-muted"
+                className="w-12 h-12 lg:w-14 lg:h-14 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-muted text-muted-foreground hover:text-green-600 border border-transparent hover:border-muted"
                 title="Share"
               >
-                <Share2 className="h-6 w-6" />
+                <Share2 className="h-5 w-5 lg:h-6 lg:w-6" />
               </button>
             </div>
           </aside>
 
           {/* Main Content */}
-          <main className="col-span-7 space-y-8">
+          <main className="col-span-1 lg:col-span-7 space-y-6 lg:space-y-8">
+            {/* Mobile Action Buttons - Show only on mobile */}
+
+            <h1 className="block md:hidden text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
+              {post.title}
+            </h1>
+            <div className="flex items-center gap-4 text-center space-y-4">
+              {/* Compact Avatar */}
+              <div className="relative">
+                <Avatar className="h-16 w-16 ring-2 ring-primary/10">
+                  <AvatarImage src={post.author.avatar} />
+                  <AvatarFallback className="text-lg bg-primary/5 text-primary">
+                    {post.author.name?.[0] || "U"}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+              <h3 className="font-semibold text-lg leading-tight truncate">
+                {post.author.name}
+              </h3>
+
+              {/* Follow Button */}
+              {user && user.id !== post.author.userId && (
+                <Button
+                  onClick={handleFollow}
+                  variant={isFollowing ? "outline" : "default"}
+                  size="sm"
+                  className="w-26"
+                >
+                  {isFollowing ? "Following" : "Follow"}
+                </Button>
+              )}
+            </div>
+            <div className="lg:hidden flex items-center justify-between gap-2 py-2 border-b">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleLike}
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-full transition-all ${
+                    liked ? "bg-red-50 text-red-600" : "hover:bg-muted"
+                  }`}
+                  title="Like"
+                >
+                  <Heart className={`h-4 w-4 ${liked ? "fill-current" : ""}`} />
+                  <span className="text-sm font-medium">{likesCount}</span>
+                </button>
+
+                <button
+                  onClick={() =>
+                    document
+                      .getElementById("comments")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                  className="flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-muted transition-all"
+                  title="Comments"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  <span className="text-sm font-medium">{comments.length}</span>
+                </button>
+
+                <BookmarkButton
+                  postId={id as string}
+                  size="sm"
+                  variant="minimal"
+                />
+              </div>
+
+              <button
+                onClick={handleShare}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-full hover:bg-muted transition-all"
+                title="Share"
+              >
+                <Share2 className="h-4 w-4" />
+              </button>
+            </div>
             {/* Cover Image */}
             {post.coverImage && (
               <div className="aspect-video w-full overflow-hidden rounded-lg">
@@ -417,16 +489,16 @@ export default function PostPage() {
             )}
 
             {/* Post Header */}
-            <header className="space-y-6">
-              <div className="flex items-center gap-4">
-                <Avatar className="h-12 w-12">
+            <header className="space-y-4 lg:space-y-6">
+              <div className="hidden md:flex items-center gap-3 lg:gap-4">
+                <Avatar className="h-10 w-10 lg:h-12 lg:w-12">
                   <AvatarImage src={post.author?.avatar} />
                   <AvatarFallback>
                     {post.author?.name?.[0] || "U"}
                   </AvatarFallback>
                 </Avatar>
-                <div>
-                  <p className="font-semibold text-lg">
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-base lg:text-lg truncate">
                     <Link
                       href={`/profile/${post.author?.userId}`}
                       className="hover:text-primary transition-colors"
@@ -434,61 +506,63 @@ export default function PostPage() {
                       {post.author?.name || "Anonymous"}
                     </Link>
                   </p>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <span>
-                      Posted on{" "}
+                  <div className="flex flex-wrap items-center gap-2 lg:gap-4 text-xs lg:text-sm text-muted-foreground">
+                    <span className="truncate">
                       {new Date(post.publishedAt).toLocaleDateString()}
                     </span>
                     {post.updatedAt && post.updatedAt !== post.publishedAt && (
                       <>
-                        <span>•</span>
-                        <span>
-                          Edited on{" "}
-                          {new Date(post.updatedAt).toLocaleDateString()}
+                        <span className="hidden sm:inline">•</span>
+                        <span className="hidden sm:inline truncate">
+                          Edited {new Date(post.updatedAt).toLocaleDateString()}
                         </span>
                       </>
                     )}
-                    <span>•</span>
+                    <span className="hidden sm:inline">•</span>
                     <div className="flex items-center gap-1">
                       <Clock className="h-3 w-3" />
-                      <span>{post.readingTime} min read</span>
+                      <span>{post.readingTime} min</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <h1 className="text-4xl font-bold leading-tight">{post.title}</h1>
+              <h1 className="hidden md:block text-2xl sm:text-3xl lg:text-4xl font-bold leading-tight">
+                {post.title}
+              </h1>
 
               <div className="flex flex-wrap gap-2">
                 {post.tags.map((tag) => (
-                  <Badge key={tag} variant="secondary">
+                  <Badge key={tag} variant="secondary" className="text-xs">
                     {tag}
                   </Badge>
                 ))}
                 {post.category && (
-                  <Badge variant="outline">{post.category}</Badge>
+                  <Badge variant="outline" className="text-xs">
+                    {post.category}
+                  </Badge>
                 )}
               </div>
             </header>
 
             {/* Post Content */}
-            <article className="prose prose-lg max-w-none dark:prose-invert">
+            <article className="prose prose-sm sm:prose-base lg:prose-lg max-w-none dark:prose-invert">
               <div dangerouslySetInnerHTML={{ __html: post.content }} />
             </article>
 
-            {/* Author Bio at Bottom */}
+            {/* Author Bio at Bottom - Mobile optimized */}
             <Card>
-              <CardContent className="pt-6">
-                <div className="flex items-start gap-4">
-                  <Avatar className="h-16 w-16">
+              <CardContent className="pt-4 lg:pt-6">
+                <div className="flex flex-col sm:flex-row items-start gap-3 lg:gap-4">
+                  <Avatar className="h-12 w-12 lg:h-16 lg:w-16">
                     <AvatarImage src={post.author.avatar} />
                     <AvatarFallback>
                       {post.author.name?.[0] || "U"}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-semibold text-lg">
+                  <div className="flex-1 w-full min-w-0">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                      <h3 className="font-semibold text-base lg:text-lg truncate">
                         <Link
                           href={`/profile/${post.author?.userId}`}
                           className="hover:text-primary transition-colors"
@@ -501,30 +575,33 @@ export default function PostPage() {
                           onClick={handleFollow}
                           variant={isFollowing ? "outline" : "default"}
                           size="sm"
+                          className="w-full sm:w-auto"
                         >
                           {isFollowing ? "Following" : "Follow"}
                         </Button>
                       )}
                     </div>
                     {post.author.position && (
-                      <p className="text-muted-foreground mb-1">
-                        <Briefcase className="h-4 w-4 inline mr-1" />
+                      <p className="text-sm text-muted-foreground mb-1">
+                        <Briefcase className="h-3 w-3 inline mr-1" />
                         {post.author.position}
                       </p>
                     )}
                     {post.author.bio && (
-                      <p className="text-muted-foreground">{post.author.bio}</p>
+                      <p className="text-sm text-muted-foreground line-clamp-3">
+                        {post.author.bio}
+                      </p>
                     )}
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Comments Section */}
+            {/* Comments Section - Mobile optimized */}
             <Card id="comments">
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <CardTitle className="text-xl">
+              <CardHeader className="px-4 lg:px-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <CardTitle className="text-lg lg:text-xl">
                     Comments ({comments.length})
                   </CardTitle>
                   {user && (
@@ -532,24 +609,24 @@ export default function PostPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setNotifyComments(!notifyComments)}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 w-full sm:w-auto justify-center"
                     >
                       {notifyComments ? (
                         <>
                           <BellOff className="h-4 w-4" />
-                          Unsubscribe
+                          <span className="text-sm">Unsubscribe</span>
                         </>
                       ) : (
                         <>
                           <Bell className="h-4 w-4" />
-                          Subscribe
+                          <span className="text-sm">Subscribe</span>
                         </>
                       )}
                     </Button>
                   )}
                 </div>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4 lg:space-y-6 px-4 lg:px-6">
                 {/* Add Comment */}
                 {user ? (
                   <div className="space-y-3">
@@ -558,11 +635,13 @@ export default function PostPage() {
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
                       rows={3}
+                      className="text-sm lg:text-base"
                     />
                     <Button
                       onClick={handleCreateComment}
                       disabled={commentLoading || !newComment.trim()}
-                      className="flex items-center gap-2"
+                      className="flex items-center gap-2 w-full sm:w-auto"
+                      size="sm"
                     >
                       <Send className="h-4 w-4" />
                       {commentLoading ? "Posting..." : "Post Comment"}
@@ -570,11 +649,13 @@ export default function PostPage() {
                   </div>
                 ) : (
                   <div className="text-center py-4">
-                    <p className="text-muted-foreground mb-2">
+                    <p className="text-sm text-muted-foreground mb-2">
                       Please sign in to comment
                     </p>
                     <Link href="/auth/login">
-                      <Button variant="outline">Sign In</Button>
+                      <Button variant="outline" size="sm">
+                        Sign In
+                      </Button>
                     </Link>
                   </div>
                 )}
@@ -582,7 +663,7 @@ export default function PostPage() {
                 {/* Comments List */}
                 <div className="space-y-4">
                   {comments.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">
+                    <p className="text-sm text-muted-foreground text-center py-8">
                       No comments yet. Be the first to comment!
                     </p>
                   ) : (
@@ -591,16 +672,16 @@ export default function PostPage() {
                         key={comment._id}
                         className="border-b pb-4 last:border-b-0"
                       >
-                        <div className="flex items-start gap-3">
-                          <Avatar className="h-8 w-8">
+                        <div className="flex items-start gap-2 lg:gap-3">
+                          <Avatar className="h-7 w-7 lg:h-8 lg:w-8 flex-shrink-0">
                             <AvatarImage src={comment.author?.avatar} />
                             <AvatarFallback>
                               {comment.author?.name?.[0] || "U"}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <span className="font-medium text-sm">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-2 mb-1">
+                              <span className="font-medium text-xs lg:text-sm truncate">
                                 <Link
                                   href={`/profile/${comment.author?.userId}`}
                                   className="hover:text-primary transition-colors"
@@ -614,7 +695,9 @@ export default function PostPage() {
                                 ).toLocaleDateString()}
                               </span>
                             </div>
-                            <p className="text-sm">{comment.content}</p>
+                            <p className="text-xs lg:text-sm break-words">
+                              {comment.content}
+                            </p>
                             <div className="flex items-center gap-4 mt-2">
                               <Button
                                 variant="ghost"
@@ -637,8 +720,8 @@ export default function PostPage() {
             </Card>
           </main>
 
-          {/* Right Sidebar */}
-          <aside className="col-span-4 space-y-8">
+          {/* Right Sidebar - Hidden on mobile, shown on large screens */}
+          <aside className="hidden lg:block lg:col-span-4 space-y-6 lg:space-y-8">
             {/* Author Profile */}
             <Card className="border-0 shadow-sm">
               <CardContent className="pt-6">
@@ -654,12 +737,12 @@ export default function PostPage() {
                   </div>
 
                   {/* Author Name */}
-                  <div className="space-y-1">
-                    <h3 className="font-semibold text-lg leading-tight">
+                  <div className="space-y-1 w-full">
+                    <h3 className="font-semibold text-lg leading-tight truncate">
                       {post.author.name}
                     </h3>
                     {post.author.position && (
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-sm text-muted-foreground line-clamp-2">
                         {post.author.position}
                       </p>
                     )}
@@ -680,7 +763,7 @@ export default function PostPage() {
                   {/* Author Details - Minimal Design */}
                   <div className="w-full space-y-3 pt-2">
                     {post.author.bio && (
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
                         {post.author.bio}
                       </p>
                     )}
@@ -688,26 +771,30 @@ export default function PostPage() {
                     <div className="space-y-2">
                       {post.author.location && (
                         <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                          <MapPin className="h-3 w-3" />
-                          <span>{post.author.location}</span>
+                          <MapPin className="h-3 w-3 flex-shrink-0" />
+                          <span className="truncate">
+                            {post.author.location}
+                          </span>
                         </div>
                       )}
                       {post.author.work && (
                         <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                          <Briefcase className="h-3 w-3" />
-                          <span>{post.author.work}</span>
+                          <Briefcase className="h-3 w-3 flex-shrink-0" />
+                          <span className="truncate">{post.author.work}</span>
                         </div>
                       )}
                       {post.author.education && (
                         <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                          <GraduationCap className="h-3 w-3" />
-                          <span>{post.author.education}</span>
+                          <GraduationCap className="h-3 w-3 flex-shrink-0" />
+                          <span className="truncate">
+                            {post.author.education}
+                          </span>
                         </div>
                       )}
                       {post.author.joinedAt && (
                         <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                          <Calendar className="h-3 w-3" />
-                          <span>
+                          <Calendar className="h-3 w-3 flex-shrink-0" />
+                          <span className="truncate">
                             Joined{" "}
                             {new Date(
                               post.author.joinedAt

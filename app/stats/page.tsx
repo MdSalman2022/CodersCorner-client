@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -28,38 +28,147 @@ interface UserStats {
 }
 
 export default function StatsPage() {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const [stats, setStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const isFetchingRef = useRef(false);
+  const hasInitializedRef = useRef(false);
 
   useEffect(() => {
-    if (user) {
-      fetchStats();
+    // Wait for auth to complete first
+    if (authLoading) {
+      console.log("⏳ Waiting for auth to complete...");
+      return;
     }
-  }, [user]);
+
+    // Only run once after auth loads
+    if (hasInitializedRef.current) {
+      return;
+    }
+
+    if (user?.id) {
+      console.log("✅ Auth complete, initializing stats fetch");
+      hasInitializedRef.current = true;
+      fetchStats();
+    } else {
+      // User not logged in, stop loading
+      console.log("❌ No user found after auth complete");
+      hasInitializedRef.current = true;
+      setLoading(false);
+    }
+
+    // Cleanup function to abort fetch on unmount
+    return () => {
+      if (abortControllerRef.current) {
+        console.log("🛑 Aborting stats fetch request");
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [user?.id, authLoading]);
 
   const fetchStats = async () => {
+    // Prevent duplicate requests
+    if (isFetchingRef.current) {
+      console.log(
+        "⚠️ Stats fetch already in progress, skipping duplicate request"
+      );
+      return;
+    }
+
     try {
-      // In a real app, this would fetch actual user stats
-      // For now, simulate some stats
-      const mockStats: UserStats = {
-        totalPosts: 12,
-        totalViews: 2847,
-        totalLikes: 156,
-        totalComments: 89,
-        followersCount: 234,
-        followingCount: 67,
-        postsThisMonth: 3,
-        viewsThisMonth: 456,
-      };
-      setStats(mockStats);
-    } catch (error) {
-      console.error("Failed to fetch stats:", error);
+      if (!user?.id) {
+        setLoading(false);
+        return;
+      }
+
+      // Abort previous request if exists
+      if (abortControllerRef.current) {
+        console.log("🛑 Canceling previous stats fetch");
+        abortControllerRef.current.abort();
+      }
+
+      // Create new abort controller
+      abortControllerRef.current = new AbortController();
+      isFetchingRef.current = true;
+
+      console.log("🔄 Fetching stats for user:", user.id);
+
+      // Fetch user stats
+      const userStatsResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/user/${user.id}`,
+        {
+          signal: abortControllerRef.current.signal,
+        }
+      );
+
+      if (userStatsResponse.ok) {
+        const userStatsData = await userStatsResponse.json();
+
+        // Fetch post stats for this month
+        const postStatsResponse = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/stats/posts?userId=${user.id}&timeRange=month`,
+          {
+            signal: abortControllerRef.current.signal,
+          }
+        );
+
+        let postsThisMonth = 0;
+        let viewsThisMonth = 0;
+
+        if (postStatsResponse.ok) {
+          const postStatsData = await postStatsResponse.json();
+          postsThisMonth = postStatsData.posts?.length || 0;
+          viewsThisMonth = postStatsData.summary?.totalViews || 0;
+        }
+
+        // Combine all stats
+        const combinedStats: UserStats = {
+          totalPosts: userStatsData.stats?.totalPosts || 0,
+          totalViews: userStatsData.stats?.totalViews || 0,
+          totalLikes: userStatsData.stats?.totalLikes || 0,
+          totalComments: userStatsData.stats?.totalComments || 0,
+          followersCount: userStatsData.stats?.followers || 0,
+          followingCount: userStatsData.stats?.following || 0,
+          postsThisMonth,
+          viewsThisMonth,
+        };
+
+        console.log("✅ Stats fetched successfully:", combinedStats);
+        setStats(combinedStats);
+      }
+    } catch (error: unknown) {
+      // Ignore abort errors - they're expected when cleaning up
+      if (error instanceof Error && error.name === "AbortError") {
+        console.log("ℹ️ Stats fetch aborted (this is normal on cleanup)");
+      } else {
+        console.error("Failed to fetch stats:", error);
+      }
     } finally {
+      isFetchingRef.current = false;
       setLoading(false);
     }
   };
 
+  // Show loading while auth is loading OR stats are loading
+  if (authLoading || loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto px-8 py-8">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-muted rounded w-48"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="h-32 bg-muted rounded"></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // After auth and stats load, check if user exists
   if (!user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">

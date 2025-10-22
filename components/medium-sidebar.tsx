@@ -49,11 +49,14 @@ export function MediumSidebar({
   const fetchFollowing = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user?.id}/following-users`
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/users/${user?._id}/following-users`
       );
       if (response.ok) {
         const data = await response.json();
+        console.log("✅ Following users fetched:", data);
         setFollowing(data.following || []);
+      } else {
+        console.error("Failed to fetch following:", response.status);
       }
     } catch (error) {
       console.error("Failed to fetch following:", error);
@@ -74,7 +77,7 @@ export function MediumSidebar({
       label: "Profile",
       href: user ? `/profile/${user.id}` : "/auth/login",
     },
-    { icon: BarChart3, label: "Stats", href: "/library/stats" },
+    // { icon: BarChart3, label: "Stats", href: "/library/stats" },
   ];
 
   return (

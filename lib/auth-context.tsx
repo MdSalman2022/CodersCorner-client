@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { authClient, useSession } from "@/lib/auth";
 
 interface User {
@@ -34,6 +34,8 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { data: session, isPending } = useSession();
   const [user, setUser] = useState(session?.user || null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const isFetchingRef = useRef(false);
 
   useEffect(() => {
     if (session?.user) {
@@ -65,10 +67,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       localStorage.removeItem("user");
     }
+
+    // Cleanup: Abort any pending requests when dependencies change
+    return () => {
+      if (abortControllerRef.current) {
+        console.log("🛑 Aborting previous user fetch request");
+        abortControllerRef.current.abort();
+      }
+    };
   }, [session, isPending]);
 
   const fetchUserData = async (sessionUser: User) => {
     try {
+      // Prevent multiple concurrent requests
+      if (isFetchingRef.current) {
+        console.log(
+          "⚠️ User fetch already in progress, skipping duplicate request"
+        );
+        return;
+      }
+
+      // Abort previous request if it exists
+      if (abortControllerRef.current) {
+        console.log("🛑 Canceling previous fetch request");
+        abortControllerRef.current.abort();
+      }
+
+      // Create new abort controller for this request
+      abortControllerRef.current = new AbortController();
+      isFetchingRef.current = true;
+
+      console.log("🔄 Fetching user data for userId:", sessionUser.id);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/user/me`,
         {
@@ -79,14 +109,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           body: JSON.stringify({
             userId: sessionUser.id,
           }),
+          signal: abortControllerRef.current.signal,
         }
       );
+
+      // Check if request was aborted
+      if (!response.ok && response.status === 0) {
+        console.log("⚠️ User fetch was canceled/aborted");
+        isFetchingRef.current = false;
+        return;
+      }
 
       if (response.ok) {
         const data = await response.json();
         const userData = data.user;
 
-        console.log("Auth Context - API Response:", data);
+        console.log("✅ Auth Context - API Response received successfully");
         console.log("Auth Context - User Data:", userData);
         console.log("Auth Context - Role Name:", userData.roleName);
 
@@ -125,7 +163,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             if (syncResponse.ok) {
               console.log("✅ User profile synced, fetching data again...");
-
+              isFetchingRef.current = false;
               await fetchUserData(sessionUser);
               return;
             } else {
@@ -153,10 +191,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           await signOut();
         }
       }
-    } catch (error) {
-      console.error("Failed to fetch user data:", error);
-
-      setUser(sessionUser as unknown as typeof user);
+    } catch (error: unknown) {
+      // Ignore abort errors - they're expected when cleaning up
+      if (error instanceof Error && error.name === "AbortError") {
+        console.log("ℹ️ User fetch aborted (this is normal on cleanup)");
+      } else {
+        console.error("Failed to fetch user data:", error);
+        setUser(sessionUser as unknown as typeof user);
+      }
+    } finally {
+      isFetchingRef.current = false;
     }
   };
 
