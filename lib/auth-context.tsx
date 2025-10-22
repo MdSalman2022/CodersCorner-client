@@ -290,7 +290,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       // Initiate Google sign-in
       await authClient.signIn.social({
         provider: "google",
-        callbackURL:        process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000";
+        callbackURL:
+          process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000",
       });
 
       console.log("✅ Auth Context: Google sign-in completed, redirecting...");
@@ -323,7 +324,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setUser(null);
       localStorage.removeItem("user");
       // Redirect to home page after sign out
-      window.location.href = process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000";
+      window.location.href =
+        process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000";
     } catch (error) {
       console.error("❌ Auth Context: Sign out error:", error);
       throw error;
