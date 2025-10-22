@@ -1,6 +1,6 @@
 {
   "env": {
-    "VITE_SERVER_URL": "https://coders-corner-server.vercel.app"
+    "NEXT_PUBLIC_SERVER_URL": "https://coders-corner-server.vercel.app"
   },
   "routes": [
     {

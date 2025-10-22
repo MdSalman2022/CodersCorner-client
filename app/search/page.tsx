@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Card,
@@ -35,7 +35,7 @@ interface Post {
   updatedAt?: string;
 }
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const [query, setQuery] = useState(initialQuery);
@@ -391,5 +391,13 @@ export default function SearchPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchPageContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -51,7 +51,7 @@ interface UserPost {
   tags: string[];
 }
 
-export default function MyContentPage() {
+function MyContentPageContent() {
   const { user } = useAuth();
   const { removeBookmark } = useBookmarks();
   const searchParams = useSearchParams();
@@ -553,5 +553,13 @@ export default function MyContentPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function MyContentPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <MyContentPageContent />
+    </Suspense>
   );
 }

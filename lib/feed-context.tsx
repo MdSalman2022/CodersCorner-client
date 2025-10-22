@@ -77,7 +77,7 @@ export const FeedProvider: React.FC<{ children: React.ReactNode }> = ({
 
       try {
         const apiUrl =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+          process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:5000";
 
         let endpoint = `/api/feed/${type}`;
         if (type === "home" && userId) {
