@@ -317,11 +317,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       await authClient.signIn.social({
         provider: "google",
-        callbackURL:
-          process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000",
       });
 
-      console.log("✅ Auth Context: Google sign-in completed, redirecting...");
+      console.log("✅ Auth Context: Google sign-in completed");
     } catch (error) {
       console.error("❌ Auth Context: Google sign-in error:", error);
       throw error;
@@ -333,7 +331,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.log("🔄 Auth Context: Calling GitHub sign-in...");
       await authClient.signIn.social({
         provider: "github",
-        callbackURL: "http://localhost:3000/",
       });
       console.log("✅ Auth Context: GitHub sign-in initiated");
     } catch (error) {
