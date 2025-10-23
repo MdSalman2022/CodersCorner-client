@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 /**
  * Auth Proxy Route
@@ -23,7 +23,26 @@ export async function GET(
         "Content-Type": "application/json",
         cookie: request.headers.get("cookie") || "",
       },
+      redirect: "manual", // Don't follow redirects automatically
     });
+
+    // Handle redirects (302, 307, etc.)
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get("location");
+      if (location) {
+        const headers = new Headers();
+        const cookies = response.headers.getSetCookie();
+        cookies.forEach((cookie) => {
+          headers.append("Set-Cookie", cookie);
+        });
+        headers.set("Location", location);
+
+        return new NextResponse(null, {
+          status: response.status,
+          headers,
+        });
+      }
+    }
 
     const contentType = response.headers.get("content-type");
     let data;
@@ -56,9 +75,10 @@ export async function GET(
       }
     );
   } catch (error) {
-    console.error("Auth proxy error:", error);
+    console.error("Auth proxy GET error:", error);
     return new Response(JSON.stringify({ error: "Auth proxy failed" }), {
       status: 500,
+      headers: { "Content-Type": "application/json" },
     });
   }
 }
@@ -80,7 +100,26 @@ export async function POST(
         cookie: request.headers.get("cookie") || "",
       },
       body,
+      redirect: "manual", // Don't follow redirects automatically
     });
+
+    // Handle redirects (302, 307, etc.)
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get("location");
+      if (location) {
+        const headers = new Headers();
+        const cookies = response.headers.getSetCookie();
+        cookies.forEach((cookie) => {
+          headers.append("Set-Cookie", cookie);
+        });
+        headers.set("Location", location);
+
+        return new NextResponse(null, {
+          status: response.status,
+          headers,
+        });
+      }
+    }
 
     const contentType = response.headers.get("content-type");
     let data;
@@ -113,9 +152,10 @@ export async function POST(
       }
     );
   } catch (error) {
-    console.error("Auth proxy error:", error);
+    console.error("Auth proxy POST error:", error);
     return new Response(JSON.stringify({ error: "Auth proxy failed" }), {
       status: 500,
+      headers: { "Content-Type": "application/json" },
     });
   }
 }
