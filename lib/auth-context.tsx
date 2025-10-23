@@ -313,17 +313,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     try {
-      console.log("🔄 Auth Context: Calling Google sign-in...");
+      console.log("🔄 Auth Context: Initiating Google sign-in...");
 
-      const result = await authClient.signIn.social({
+      await authClient.signIn.social({
         provider: "google",
+        callbackURL:
+          process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000",
       });
 
-      console.log("✅ Auth Context: Google sign-in result:", result);
-
-      // Redirect to home after successful sign-in
-      window.location.href =
-        process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000";
+      console.log("✅ Auth Context: Google sign-in initiated");
     } catch (error) {
       console.error("❌ Auth Context: Google sign-in error:", error);
       throw error;
@@ -332,22 +330,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGithub = async () => {
     try {
-      console.log("🔄 Auth Context: Calling GitHub sign-in...");
-      const result = await authClient.signIn.social({
+      console.log("🔄 Auth Context: Initiating GitHub sign-in...");
+      await authClient.signIn.social({
         provider: "github",
+        callbackURL:
+          process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000",
       });
 
-      console.log("✅ Auth Context: GitHub sign-in result:", result);
-
-      // Redirect to home after successful sign-in
-      window.location.href =
-        process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000";
+      console.log("✅ Auth Context: GitHub sign-in initiated");
     } catch (error) {
       console.error("❌ Auth Context: GitHub sign-in error:", error);
       throw error;
     }
   };
-
   const signOut = async () => {
     try {
       console.log("🔄 Auth Context: Calling signOut...");
